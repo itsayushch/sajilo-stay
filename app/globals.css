@@ -16,4 +16,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-button, input, textarea { font: inherit; }
+button, input, textarea, select { font: inherit; }
+
+button, input, select, textarea { font-size: 16px; }
+
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+  outline: 3px solid #d7a65a;
+  outline-offset: 3px;
+}

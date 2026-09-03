@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { verifyDatabase } from "@/lib/db";
+import { HostProfile, getHostProfile, verifyDatabase } from "@/lib/db";
+import { Onboarding } from "@/components/onboarding";
 
 const destinations = [
   { href: "/listing", title: "Listing", detail: "Describe your home" },
@@ -13,18 +14,29 @@ const destinations = [
 
 export function Dashboard() {
   const [storageStatus, setStorageStatus] = useState("Checking offline storage…");
+  const [profile, setProfile] = useState<HostProfile | null | undefined>(undefined);
 
   useEffect(() => {
+    const storageTimeout = window.setTimeout(() => {
+      setStorageStatus("Offline storage is taking too long. You can try again after restarting the app.");
+      setProfile((current) => current === undefined ? null : current);
+    }, 2_000);
     verifyDatabase()
-      .then(() => setStorageStatus("Offline storage is ready"))
-      .catch(() => setStorageStatus("Offline storage is unavailable in this browser"));
+      .then(getHostProfile)
+      .then((savedProfile) => { setStorageStatus("Offline storage is ready"); setProfile(savedProfile); })
+      .catch(() => { setStorageStatus("Offline storage is unavailable in this browser"); setProfile(null); })
+      .finally(() => window.clearTimeout(storageTimeout));
+    return () => window.clearTimeout(storageTimeout);
   }, []);
+
+  if (profile === undefined) return <main className="mx-auto min-h-screen max-w-lg px-4 py-6"><p className="text-base font-semibold text-[#1f5d3b]">Preparing SajiloStay…</p></main>;
+  if (!profile) return <Onboarding onComplete={setProfile} />;
 
   return (
     <main className="mx-auto min-h-screen max-w-lg px-4 py-6">
       <header className="mb-8">
         <p className="mb-1 text-sm font-bold tracking-wide text-[#1f5d3b]">SAJILOSTAY</p>
-        <h1 className="text-3xl font-bold">Your homestay, made simple.</h1>
+        <h1 className="text-3xl font-bold">Namaste, {profile.homeName}.</h1>
         <p className="mt-2 text-base leading-6 text-slate-700">An offline helper for garden-village hosts.</p>
       </header>
 

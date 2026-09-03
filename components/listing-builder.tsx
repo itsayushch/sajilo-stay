@@ -53,6 +53,8 @@ export function ListingBuilder() {
       setTier(result.tier);
       setAccepted(false);
       setStatus(`${tierLabel(result.tier)} · review and accept the listing when it feels right.`);
+    } catch {
+      setStatus("Could not create a listing right now. Please try again or use shorter notes.");
     } finally {
       setIsGenerating(false);
     }

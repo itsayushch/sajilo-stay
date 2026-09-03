@@ -12,6 +12,15 @@ export interface Booking {
   notes: string;
 }
 
+export interface HostProfile {
+  id: string;
+  homeName: string;
+  location: string;
+  rooms: number;
+  amenities: string[];
+  preferredLanguage: string;
+}
+
 export interface ChecklistState {
   itemId: string;
   checked: boolean;
@@ -43,7 +52,7 @@ export interface AppSetting {
 export interface SajiloStayDB extends DBSchema {
   host_profile: {
     key: string;
-    value: { id: string; homeName: string; location: string; rooms: number; amenities: string[]; preferredLanguage: string };
+    value: HostProfile;
   };
   listing: {
     key: string;
@@ -160,6 +169,11 @@ export async function deleteMessage(id: string) {
 export async function getHostProfile() {
   const database = await getDatabase();
   return database.get("host_profile", "primary");
+}
+
+export async function saveHostProfile(profile: HostProfile) {
+  const database = await getDatabase();
+  await database.put("host_profile", profile);
 }
 
 export async function getListing() {
