@@ -26,6 +26,15 @@ export interface Message {
   timestamp: string;
 }
 
+export interface Listing {
+  id: string;
+  rawNotes: string;
+  generatedCopy: string;
+  suggestedPriceMin: number;
+  suggestedPriceMax: number;
+  lastUpdated: string;
+}
+
 export interface SajiloStayDB extends DBSchema {
   host_profile: {
     key: string;
@@ -33,7 +42,7 @@ export interface SajiloStayDB extends DBSchema {
   };
   listing: {
     key: string;
-    value: { id: string; rawNotes: string; generatedCopy: string; suggestedPriceMin: number; suggestedPriceMax: number; lastUpdated: string };
+    value: Listing;
   };
   bookings: {
     key: string;
@@ -132,4 +141,19 @@ export async function saveMessage(message: Message) {
 export async function deleteMessage(id: string) {
   const database = await getDatabase();
   await database.delete("messages", id);
+}
+
+export async function getHostProfile() {
+  const database = await getDatabase();
+  return database.get("host_profile", "primary");
+}
+
+export async function getListing() {
+  const database = await getDatabase();
+  return database.get("listing", "primary");
+}
+
+export async function saveListing(listing: Listing) {
+  const database = await getDatabase();
+  await database.put("listing", listing);
 }

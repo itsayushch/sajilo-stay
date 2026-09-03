@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from "@/components/placeholder-screen";
+import { ListingBuilder } from "@/components/listing-builder";
 
 export default function ListingPage() {
-  return <PlaceholderScreen title="Listing" description="Turn your home notes into a guest-ready listing." />;
+  return <ListingBuilder />;
 }
