@@ -1,0 +1,12 @@
+{
+  "name": "SajiloStay",
+  "short_name": "SajiloStay",
+  "description": "Offline homestay helper for Darjeeling garden villages.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f7f1",
+  "theme_color": "#1f5d3b",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
