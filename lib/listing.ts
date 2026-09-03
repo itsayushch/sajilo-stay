@@ -1,6 +1,6 @@
 import type { Listing } from "@/lib/db";
 
-export type ListingTier = "on-device-ai" | "offline-basic";
+export type ListingTier = "online-ai" | "on-device-ai" | "offline-basic";
 
 export interface PriceBand {
   min: number;
@@ -58,6 +58,9 @@ async function generateWithPromptApi(notes: string, price: PriceBand) {
 
 export async function generateListingCopy(notes: string): Promise<{ copy: string; tier: ListingTier; price: PriceBand }> {
   const price = suggestPrice(notes);
+  const { requestOnlineAi } = await import("@/lib/online-ai");
+  const onlineCopy = await requestOnlineAi({ action: "generateListing", notes });
+  if (onlineCopy) return { copy: onlineCopy, tier: "online-ai", price };
   try {
     const copy = await generateWithPromptApi(notes, price);
     if (copy?.trim()) return { copy: copy.trim(), tier: "on-device-ai", price };

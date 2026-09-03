@@ -10,7 +10,7 @@ function formatPrice(amount: number) {
 }
 
 function tierLabel(tier: ListingTier) {
-  return tier === "on-device-ai" ? "On-device AI" : "Offline basic";
+  return tier === "online-ai" ? "Online AI" : tier === "on-device-ai" ? "On-device AI" : "Offline basic";
 }
 
 export function ListingBuilder() {

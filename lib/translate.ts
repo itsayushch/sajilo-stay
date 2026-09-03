@@ -6,7 +6,7 @@ export const languages = {
 } as const;
 
 export type LanguageCode = keyof typeof languages;
-export type TranslationTier = "on-device-ai" | "cached-model" | "offline-basic";
+export type TranslationTier = "online-ai" | "on-device-ai" | "cached-model" | "offline-basic";
 
 export interface TranslationResult {
   text: string;
@@ -100,6 +100,10 @@ export async function translate(text: string, sourceLanguage: LanguageCode, targ
   if (!text.trim() || sourceLanguage === targetLanguage) {
     return { text, tier: "offline-basic" };
   }
+
+  const { requestOnlineAi } = await import("@/lib/online-ai");
+  const onlineTranslation = await requestOnlineAi({ action: "translate", text, sourceLang: sourceLanguage, targetLang: targetLanguage });
+  if (onlineTranslation) return { text: onlineTranslation, tier: "online-ai" };
 
   try {
     const translated = await translateWithChrome(text, sourceLanguage, targetLanguage);

@@ -8,7 +8,6 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  output: "export",
   // Keep `next dev` from racing with production exports over the same generated files.
   distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
   images: { unoptimized: true },

@@ -10,7 +10,7 @@ function createId() {
 }
 
 function tierLabel(tier: TranslationResult["tier"]) {
-  return { "on-device-ai": "On-device AI", "cached-model": "Cached on-device model", "offline-basic": "Offline basic" }[tier];
+  return { "online-ai": "Online AI", "on-device-ai": "On-device AI", "cached-model": "Cached on-device model", "offline-basic": "Offline basic" }[tier];
 }
 
 export function GuestChat() {

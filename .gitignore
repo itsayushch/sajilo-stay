@@ -1,4 +1,5 @@
 node_modules
+.env.local
 .next
 .next-stale-cache*
 .next-dev
@@ -8,5 +9,6 @@ build-output.log
 preview-output.log
 pnpm-install-output.log
 dev-output.log
+production-output.log
 public/sw.js
 public/workbox-*.js

@@ -42,6 +42,7 @@ export function Dashboard() {
           </Link>
         ))}
       </nav>
+      <Link href="/settings" className="mt-6 block text-center text-sm font-bold text-[#1f5d3b] underline">Settings</Link>
     </main>
   );
 }

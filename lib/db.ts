@@ -35,6 +35,11 @@ export interface Listing {
   lastUpdated: string;
 }
 
+export interface AppSetting {
+  name: string;
+  value: boolean;
+}
+
 export interface SajiloStayDB extends DBSchema {
   host_profile: {
     key: string;
@@ -58,6 +63,10 @@ export interface SajiloStayDB extends DBSchema {
     key: string;
     value: ChecklistState;
   };
+  app_settings: {
+    key: string;
+    value: AppSetting;
+  };
 }
 
 let databasePromise: Promise<IDBPDatabase<SajiloStayDB>> | undefined;
@@ -67,15 +76,20 @@ export function getDatabase() {
     throw new Error("IndexedDB is only available in the browser.");
   }
 
-  databasePromise ??= openDB<SajiloStayDB>("sajilo-stay", 1, {
+  databasePromise ??= openDB<SajiloStayDB>("sajilo-stay", 2, {
     upgrade(database) {
-      database.createObjectStore("host_profile", { keyPath: "id" });
-      database.createObjectStore("listing", { keyPath: "id" });
-      const bookings = database.createObjectStore("bookings", { keyPath: "id" });
-      bookings.createIndex("by-check-in", "checkIn");
-      const messages = database.createObjectStore("messages", { keyPath: "id" });
-      messages.createIndex("by-timestamp", "timestamp");
-      database.createObjectStore("checklist_state", { keyPath: "itemId" });
+      if (!database.objectStoreNames.contains("host_profile")) database.createObjectStore("host_profile", { keyPath: "id" });
+      if (!database.objectStoreNames.contains("listing")) database.createObjectStore("listing", { keyPath: "id" });
+      if (!database.objectStoreNames.contains("bookings")) {
+        const bookings = database.createObjectStore("bookings", { keyPath: "id" });
+        bookings.createIndex("by-check-in", "checkIn");
+      }
+      if (!database.objectStoreNames.contains("messages")) {
+        const messages = database.createObjectStore("messages", { keyPath: "id" });
+        messages.createIndex("by-timestamp", "timestamp");
+      }
+      if (!database.objectStoreNames.contains("checklist_state")) database.createObjectStore("checklist_state", { keyPath: "itemId" });
+      if (!database.objectStoreNames.contains("app_settings")) database.createObjectStore("app_settings", { keyPath: "name" });
     },
   });
 
@@ -156,4 +170,14 @@ export async function getListing() {
 export async function saveListing(listing: Listing) {
   const database = await getDatabase();
   await database.put("listing", listing);
+}
+
+export async function getForceOfflineMode() {
+  const database = await getDatabase();
+  return Boolean((await database.get("app_settings", "force-offline"))?.value);
+}
+
+export async function saveForceOfflineMode(enabled: boolean) {
+  const database = await getDatabase();
+  await database.put("app_settings", { name: "force-offline", value: enabled });
 }
