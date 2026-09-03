@@ -1,6 +1,7 @@
 node_modules
 .next
-.next-stale-cache
+.next-stale-cache*
+.next-dev
 out
 *.tsbuildinfo
 build-output.log
