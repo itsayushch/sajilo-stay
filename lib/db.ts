@@ -2,6 +2,21 @@ import { DBSchema, IDBPDatabase, openDB } from "idb";
 
 export type BookingStatus = "pending" | "paid";
 
+export interface Booking {
+  id: string;
+  guestName: string;
+  checkIn: string;
+  checkOut: string;
+  amount: number;
+  status: BookingStatus;
+  notes: string;
+}
+
+export interface ChecklistState {
+  itemId: string;
+  checked: boolean;
+}
+
 export interface SajiloStayDB extends DBSchema {
   host_profile: {
     key: string;
@@ -13,7 +28,7 @@ export interface SajiloStayDB extends DBSchema {
   };
   bookings: {
     key: string;
-    value: { id: string; guestName: string; checkIn: string; checkOut: string; amount: number; status: BookingStatus; notes: string };
+    value: Booking;
     indexes: { "by-check-in": string };
   };
   messages: {
@@ -23,7 +38,7 @@ export interface SajiloStayDB extends DBSchema {
   };
   checklist_state: {
     key: string;
-    value: { itemId: string; checked: boolean };
+    value: ChecklistState;
   };
 }
 
@@ -68,4 +83,29 @@ export async function verifyDatabase() {
   if (!savedProbe || savedProbe.id !== probe.id) {
     throw new Error("IndexedDB read/write verification failed.");
   }
+}
+
+export async function getBookings() {
+  const database = await getDatabase();
+  return database.getAllFromIndex("bookings", "by-check-in");
+}
+
+export async function saveBooking(booking: Booking) {
+  const database = await getDatabase();
+  await database.put("bookings", booking);
+}
+
+export async function deleteBooking(id: string) {
+  const database = await getDatabase();
+  await database.delete("bookings", id);
+}
+
+export async function getChecklistStates() {
+  const database = await getDatabase();
+  return database.getAll("checklist_state");
+}
+
+export async function saveChecklistState(state: ChecklistState) {
+  const database = await getDatabase();
+  await database.put("checklist_state", state);
 }

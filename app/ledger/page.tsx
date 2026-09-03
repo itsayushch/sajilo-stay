@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from "@/components/placeholder-screen";
+import { Ledger } from "@/components/ledger";
 
 export default function LedgerPage() {
-  return <PlaceholderScreen title="Bookings & Ledger" description="Keep booking dates and cash records in one simple place." />;
+  return <Ledger />;
 }

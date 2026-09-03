@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from "@/components/placeholder-screen";
+import { Checklist } from "@/components/checklist";
 
 export default function ChecklistPage() {
-  return <PlaceholderScreen title="Hosting Checklist" description="Prepare your home for guests with confidence." />;
+  return <Checklist />;
 }
