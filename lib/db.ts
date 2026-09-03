@@ -17,6 +17,15 @@ export interface ChecklistState {
   checked: boolean;
 }
 
+export interface Message {
+  id: string;
+  originalText: string;
+  originalLang: string;
+  translatedText: string;
+  translatedLang: string;
+  timestamp: string;
+}
+
 export interface SajiloStayDB extends DBSchema {
   host_profile: {
     key: string;
@@ -33,7 +42,7 @@ export interface SajiloStayDB extends DBSchema {
   };
   messages: {
     key: string;
-    value: { id: string; originalText: string; originalLang: string; translatedText: string; translatedLang: string; timestamp: string };
+    value: Message;
     indexes: { "by-timestamp": string };
   };
   checklist_state: {
@@ -108,4 +117,19 @@ export async function getChecklistStates() {
 export async function saveChecklistState(state: ChecklistState) {
   const database = await getDatabase();
   await database.put("checklist_state", state);
+}
+
+export async function getMessages() {
+  const database = await getDatabase();
+  return database.getAllFromIndex("messages", "by-timestamp");
+}
+
+export async function saveMessage(message: Message) {
+  const database = await getDatabase();
+  await database.put("messages", message);
+}
+
+export async function deleteMessage(id: string) {
+  const database = await getDatabase();
+  await database.delete("messages", id);
 }

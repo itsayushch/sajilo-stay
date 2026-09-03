@@ -1,5 +1,5 @@
-import { PlaceholderScreen } from "@/components/placeholder-screen";
+import { GuestChat } from "@/components/guest-chat";
 
 export default function ChatPage() {
-  return <PlaceholderScreen title="Guest Chat" description="Translate practical guest conversations, even offline." />;
+  return <GuestChat />;
 }
