@@ -1,9 +1,11 @@
 node_modules
 .next
+.next-stale-cache
 out
 *.tsbuildinfo
 build-output.log
 preview-output.log
 pnpm-install-output.log
+dev-output.log
 public/sw.js
 public/workbox-*.js
