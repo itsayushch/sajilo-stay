@@ -6,17 +6,13 @@ import { HostProfile, getHostProfile, verifyDatabase } from "@/lib/db";
 import { Onboarding } from "@/components/onboarding";
 
 export function Dashboard() {
-  const [storageStatus, setStorageStatus] = useState("Checking offline storage…");
   const [profile, setProfile] = useState<HostProfile | null>(null);
 
   useEffect(() => {
-    const storageTimeout = window.setTimeout(() => setStorageStatus("Offline storage is taking too long. You can still start your profile below."), 2_000);
     verifyDatabase()
       .then(getHostProfile)
-      .then((savedProfile) => { setStorageStatus("Offline storage is ready"); setProfile(savedProfile ?? null); })
-      .catch(() => { setStorageStatus("Offline storage is unavailable in this browser"); setProfile(null); })
-      .finally(() => window.clearTimeout(storageTimeout));
-    return () => window.clearTimeout(storageTimeout);
+      .then((savedProfile) => setProfile(savedProfile ?? null))
+      .catch((error: unknown) => console.error("Sajilo Stay could not open offline storage.", error));
   }, []);
 
   if (!profile) return <Onboarding onComplete={setProfile} />;
@@ -31,14 +27,6 @@ export function Dashboard() {
         </div>
         <Link href="/settings" className="home-link mt-1 shrink-0 text-sm font-bold">Settings</Link>
       </header>
-
-      <section aria-label="Quick status" className="paper-panel mb-6 p-4">
-        <p className="sign-title text-xl font-bold">Today at your homestay</p>
-        <div className="mt-3 border-t border-[#b9ccc0] pt-3">
-          <p className="muted-copy text-sm">Open your hosting book whenever a guest calls or a stay is confirmed.</p>
-          <p className="status-line mt-3 text-sm font-bold" role="status">{storageStatus}</p>
-        </div>
-      </section>
 
       <nav aria-label="Main sections" className="grid gap-3">
         <Link href="/ledger" className="register-panel block p-5 outline-offset-4 hover:border-[#1f5d3b] focus-visible:ring-2 focus-visible:ring-[#1f5d3b]">
