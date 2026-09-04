@@ -187,3 +187,8 @@ export async function saveListing(listing: Listing) {
   const database = await getDatabase();
   await database.put("listing", listing);
 }
+
+export async function deleteListing() {
+  const database = await getDatabase();
+  await database.delete("listing", "primary");
+}
