@@ -17,6 +17,19 @@ type LanguageModelApi = {
 
 const chromeLanguageModel = globalThis as typeof globalThis & { LanguageModel?: LanguageModelApi };
 
+// A compact instruction-tuned model fetched and cached by Transformers.js on first use.
+// It is intentionally remote rather than bundled so the installed app stays small.
+const localListingModel = "onnx-community/SmolLM2-135M-Instruct-ONNX";
+
+async function loadLocalListingGenerator() {
+  const { env, pipeline } = await import("@huggingface/transformers");
+  env.useBrowserCache = true;
+  env.cacheKey = "sajilostay-listing-model";
+  return pipeline("text-generation", localListingModel, { dtype: "q4f16" });
+}
+
+let localListingGenerator: Promise<Awaited<ReturnType<typeof loadLocalListingGenerator>>> | null = null;
+
 function contains(notes: string, terms: string[]) {
   return terms.some((term) => notes.includes(term));
 }
@@ -56,6 +69,34 @@ async function generateWithPromptApi(notes: string, price: PriceBand) {
   }
 }
 
+function extractGeneratedText(output: unknown) {
+  const firstCandidate = Array.isArray(output) ? output[0] : null;
+  const first = Array.isArray(firstCandidate) ? firstCandidate[0] : firstCandidate;
+  if (!first || typeof first !== "object" || !("generated_text" in first)) return null;
+  const generated = (first as { generated_text: unknown }).generated_text;
+  if (typeof generated === "string") return generated.trim();
+  if (!Array.isArray(generated)) return null;
+  const finalMessage = generated.at(-1);
+  return typeof finalMessage?.content === "string" ? finalMessage.content.trim() : null;
+}
+
+async function generateWithLocalModel(notes: string, price: PriceBand) {
+  localListingGenerator ??= loadLocalListingGenerator();
+  const generator = await localListingGenerator;
+  const output = await generator([
+    {
+      role: "system",
+      content: "Write concise, warm and factual homestay listings in plain English. Never invent facilities, prices, locations, or promises. Return only the finished listing paragraph.",
+    },
+    {
+      role: "user",
+      content: `Write a guest-ready homestay listing of about 70 words. The price band is ₹${price.min}–₹${price.max} per night. Mention a Darjeeling tea-garden village only if it fits naturally. Use only these host notes: ${notes}`,
+    },
+  ], { max_new_tokens: 130, do_sample: false });
+  const copy = extractGeneratedText(output);
+  return copy && copy.length >= 40 ? copy : null;
+}
+
 export async function generateListingCopy(notes: string): Promise<{ copy: string; tier: ListingTier; price: PriceBand }> {
   const price = suggestPrice(notes);
   const { requestOnlineAi } = await import("@/lib/online-ai");
@@ -66,6 +107,13 @@ export async function generateListingCopy(notes: string): Promise<{ copy: string
     if (copy?.trim()) return { copy: copy.trim(), tier: "on-device-ai", price };
   } catch {
     // Gemini Nano may be absent, unsupported, or unable to download on this device.
+  }
+  try {
+    const copy = await generateWithLocalModel(notes, price);
+    if (copy) return { copy, tier: "on-device-ai", price };
+  } catch (error) {
+    // The first model download may be unavailable; retain a useful offline fallback.
+    console.warn("Sajilo Stay could not run the on-device listing model.", error);
   }
   return { copy: templateCopy(notes, price), tier: "offline-basic", price };
 }

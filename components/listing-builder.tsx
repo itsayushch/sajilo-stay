@@ -46,7 +46,7 @@ export function ListingBuilder() {
       return;
     }
     setIsGenerating(true);
-    setStatus("Writing your listing on this device…");
+    setStatus("Writing your listing… The first on-device model download can take a little while.");
     try {
       const result = await generateListingCopy(notes);
       setCopy(result.copy);
