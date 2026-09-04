@@ -127,7 +127,7 @@ export function Ledger() {
       <Link href="/" className="home-link inline-flex min-h-11 items-center text-sm font-bold">← Back</Link>
       <header className="mt-6">
         <p className="text-sm font-bold text-[#1f5d3b]">Your hosting register</p>
-        <h1 className="mt-1 text-4xl font-bold">Bookings & cash</h1>
+        <h1 className="mt-1 text-3xl font-bold">Bookings & cash</h1>
         <p className="muted-copy mt-2 text-base leading-6">Keep guest dates and payments safely on this phone.</p>
       </header>
 

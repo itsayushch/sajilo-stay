@@ -52,7 +52,7 @@ select { appearance: auto; }
 
 button {
   min-height: 2.75rem;
-  padding: 0.625rem 1rem;
+  padding: 0.5rem 0.75rem;
   color: #fff;
   background: #15506d;
   border: 1px solid #15506d;

@@ -22,16 +22,16 @@ export function Dashboard() {
       <header className="mb-7 flex items-start justify-between gap-4 pr-24">
         <div>
           <p className="mb-2 text-sm font-bold text-[#1f5d3b]">Sajilo Stay · your hosting book</p>
-          <h1 className="text-4xl font-bold leading-tight">Namaste, {profile.homeName}.</h1>
+          <h1 className="text-3xl font-bold leading-tight">Namaste, {profile.homeName}.</h1>
           <p className="muted-copy mt-2 text-base leading-6">A quiet helper for your garden-village home.</p>
         </div>
         <Link href="/settings" className="home-link mt-1 shrink-0 text-sm font-bold">Settings</Link>
       </header>
 
       <nav aria-label="Main sections" className="grid gap-3">
-        <Link href="/ledger" className="register-panel block p-5 outline-offset-4 hover:border-[#1f5d3b] focus-visible:ring-2 focus-visible:ring-[#1f5d3b]">
+        <Link href="/ledger" className="register-panel block p-4 outline-offset-4 hover:border-[#1f5d3b] focus-visible:ring-2 focus-visible:ring-[#1f5d3b]">
           <span className="wood-accent text-sm font-bold">Hosting today</span>
-          <span className="sign-title mt-1 block text-2xl font-bold">Bookings & cash</span>
+          <span className="sign-title mt-1 block text-xl font-bold">Bookings & cash</span>
           <span className="muted-copy mt-2 block text-sm leading-5">Keep guest dates, payments, and a shareable ledger in one place.</span>
         </Link>
         <div className="grid grid-cols-2 gap-3">
