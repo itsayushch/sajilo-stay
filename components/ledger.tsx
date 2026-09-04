@@ -37,7 +37,10 @@ export function Ledger() {
         setBookings(savedBookings);
         setNotice(savedBookings.length ? "" : "No bookings yet. Add your first guest below.");
       })
-      .catch(() => setNotice("Could not open offline bookings. Please try again."));
+      .catch((error: unknown) => {
+        console.error("SajiloStay could not read bookings from IndexedDB.", error);
+        setNotice("Could not open offline bookings. Please try again.");
+      });
   }, []);
 
   const totals = useMemo(() => ({
@@ -79,7 +82,8 @@ export function Ledger() {
 
     try {
       await saveBooking(booking);
-    } catch {
+    } catch (error: unknown) {
+      console.error("SajiloStay could not save a booking to IndexedDB.", error);
       setBookings(previousBookings);
       setNotice("Could not save this booking. Your last saved records are unchanged.");
     } finally {
@@ -100,7 +104,8 @@ export function Ledger() {
     setNotice("Booking removed.");
     try {
       await deleteBooking(booking.id);
-    } catch {
+    } catch (error: unknown) {
+      console.error("SajiloStay could not remove a booking from IndexedDB.", error);
       setBookings(previousBookings);
       setNotice("Could not remove this booking. Your saved record is unchanged.");
     }

@@ -85,17 +85,23 @@ export function getDatabase() {
     throw new Error("IndexedDB is only available in the browser.");
   }
 
-  databasePromise ??= openDB<SajiloStayDB>("sajilo-stay", 2, {
-    upgrade(database) {
+  databasePromise ??= openDB<SajiloStayDB>("sajilo-stay", 3, {
+    upgrade(database, _oldVersion, _newVersion, transaction) {
       if (!database.objectStoreNames.contains("host_profile")) database.createObjectStore("host_profile", { keyPath: "id" });
       if (!database.objectStoreNames.contains("listing")) database.createObjectStore("listing", { keyPath: "id" });
       if (!database.objectStoreNames.contains("bookings")) {
         const bookings = database.createObjectStore("bookings", { keyPath: "id" });
         bookings.createIndex("by-check-in", "checkIn");
+      } else {
+        const bookings = transaction.objectStore("bookings");
+        if (!bookings.indexNames.contains("by-check-in")) bookings.createIndex("by-check-in", "checkIn");
       }
       if (!database.objectStoreNames.contains("messages")) {
         const messages = database.createObjectStore("messages", { keyPath: "id" });
         messages.createIndex("by-timestamp", "timestamp");
+      } else {
+        const messages = transaction.objectStore("messages");
+        if (!messages.indexNames.contains("by-timestamp")) messages.createIndex("by-timestamp", "timestamp");
       }
       if (!database.objectStoreNames.contains("checklist_state")) database.createObjectStore("checklist_state", { keyPath: "itemId" });
       if (!database.objectStoreNames.contains("app_settings")) database.createObjectStore("app_settings", { keyPath: "name" });
@@ -128,7 +134,7 @@ export async function verifyDatabase() {
 
 export async function getBookings() {
   const database = await getDatabase();
-  return database.getAllFromIndex("bookings", "by-check-in");
+  return (await database.getAll("bookings")).sort((first, second) => first.checkIn.localeCompare(second.checkIn));
 }
 
 export async function saveBooking(booking: Booking) {
