@@ -1,5 +1,3 @@
-import { getForceOfflineMode } from "@/lib/db";
-
 type AiRequest =
   | { action: "translate"; text: string; sourceLang: string; targetLang: string }
   | { action: "generateListing"; notes: string };
@@ -7,13 +5,6 @@ type AiRequest =
 /** Requests the optional server tier. Any failure intentionally returns null for local fallbacks. */
 export async function requestOnlineAi(request: AiRequest) {
   if (typeof window === "undefined") return null;
-  try {
-    if (await getForceOfflineMode()) return null;
-  } catch (error) {
-    // Storage availability should not prevent an otherwise reachable online tier.
-    console.warn("Sajilo Stay could not read the offline preference; attempting online AI.", error);
-  }
-
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 5_000);
   try {

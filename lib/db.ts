@@ -44,11 +44,6 @@ export interface Listing {
   lastUpdated: string;
 }
 
-export interface AppSetting {
-  name: string;
-  value: boolean;
-}
-
 export interface SajiloStayDB extends DBSchema {
   host_profile: {
     key: string;
@@ -72,10 +67,6 @@ export interface SajiloStayDB extends DBSchema {
     key: string;
     value: ChecklistState;
   };
-  app_settings: {
-    key: string;
-    value: AppSetting;
-  };
 }
 
 let databasePromise: Promise<IDBPDatabase<SajiloStayDB>> | undefined;
@@ -85,7 +76,7 @@ export function getDatabase() {
     throw new Error("IndexedDB is only available in the browser.");
   }
 
-  databasePromise ??= openDB<SajiloStayDB>("sajilo-stay", 3, {
+  databasePromise ??= openDB<SajiloStayDB>("sajilo-stay", 4, {
     upgrade(database, _oldVersion, _newVersion, transaction) {
       if (!database.objectStoreNames.contains("host_profile")) database.createObjectStore("host_profile", { keyPath: "id" });
       if (!database.objectStoreNames.contains("listing")) database.createObjectStore("listing", { keyPath: "id" });
@@ -104,7 +95,7 @@ export function getDatabase() {
         if (!messages.indexNames.contains("by-timestamp")) messages.createIndex("by-timestamp", "timestamp");
       }
       if (!database.objectStoreNames.contains("checklist_state")) database.createObjectStore("checklist_state", { keyPath: "itemId" });
-      if (!database.objectStoreNames.contains("app_settings")) database.createObjectStore("app_settings", { keyPath: "name" });
+      if (database.objectStoreNames.contains("app_settings")) database.deleteObjectStore("app_settings");
     },
   });
 
@@ -190,14 +181,4 @@ export async function getListing() {
 export async function saveListing(listing: Listing) {
   const database = await getDatabase();
   await database.put("listing", listing);
-}
-
-export async function getForceOfflineMode() {
-  const database = await getDatabase();
-  return Boolean((await database.get("app_settings", "force-offline"))?.value);
-}
-
-export async function saveForceOfflineMode(enabled: boolean) {
-  const database = await getDatabase();
-  await database.put("app_settings", { name: "force-offline", value: enabled });
 }
