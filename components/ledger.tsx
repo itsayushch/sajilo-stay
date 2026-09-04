@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { bookingsToCsv } from "@/lib/csv";
 import { Booking, BookingStatus, deleteBooking, getBookings, saveBooking } from "@/lib/db";
+import { ConnectionStatus } from "@/components/connection-status";
 
 type BookingForm = Omit<Booking, "id">;
 
@@ -124,6 +125,7 @@ export function Ledger() {
 
   return (
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
+      <ConnectionStatus />
       <Link href="/" className="home-link inline-flex min-h-11 items-center text-sm font-bold">← Back</Link>
       <header className="mt-6">
         <p className="text-sm font-bold text-[#1f5d3b]">Your hosting register</p>

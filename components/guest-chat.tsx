@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { Message, deleteMessage, getMessages, saveMessage } from "@/lib/db";
 import { LanguageCode, TranslationResult, languages, quickPhrases, translate } from "@/lib/translate";
+import { ConnectionStatus } from "@/components/connection-status";
 
 function createId() {
   return globalThis.crypto?.randomUUID?.() ?? `message-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -82,6 +83,7 @@ export function GuestChat() {
 
   return (
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
+      <ConnectionStatus />
       <Link href="/" className="home-link inline-flex min-h-11 items-center text-sm font-bold">← Back</Link>
       <header className="mt-6"><p className="text-sm font-bold text-[#1f5d3b]">Words for welcoming guests</p><h1 className="mt-1 text-3xl font-bold">Guest chat</h1><p className="muted-copy mt-2 text-base leading-6">Translate practical guest messages, with an offline fallback.</p></header>
 

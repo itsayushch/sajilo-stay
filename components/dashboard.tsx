@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HostProfile, getHostProfile, verifyDatabase } from "@/lib/db";
 import { Onboarding } from "@/components/onboarding";
+import { ConnectionStatus } from "@/components/connection-status";
 
 export function Dashboard() {
   const [profile, setProfile] = useState<HostProfile | null>(null);
@@ -19,6 +20,7 @@ export function Dashboard() {
 
   return (
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
+      <ConnectionStatus />
       <header className="mb-7 flex items-start justify-between gap-4 pr-24">
         <div>
           <p className="mb-2 text-sm font-bold text-[#1f5d3b]">Sajilo Stay · your hosting book</p>
