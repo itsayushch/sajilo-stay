@@ -11,7 +11,7 @@ function createId() {
 }
 
 function tierLabel(tier: TranslationResult["tier"]) {
-  return { "online-ai": "Online AI", "on-device-ai": "On-device AI", "cached-model": "Cached on-device model", "offline-basic": "Offline basic" }[tier];
+  return { "online-ai": "Online AI", "on-device-ai": "On-device AI", "offline-basic": "Offline basic" }[tier];
 }
 
 export function GuestChat() {
@@ -91,7 +91,7 @@ export function GuestChat() {
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6 sm:px-5">
       <ConnectionStatus />
       <Link href="/" className="home-link inline-flex min-h-11 items-center text-sm font-bold">← Back</Link>
-      <header className="mt-6"><p className="inline-flex rounded-full border border-[#b7d7e2] bg-white/80 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#15506d]">Guest messages</p><h1 className="mt-3 text-3xl font-extrabold">Guest chat</h1><p className="muted-copy mt-2 max-w-sm text-sm leading-6">Translate practical messages, even when this phone is offline.</p></header>
+      <header className="mt-6"><p className="inline-flex rounded-full border border-[#b7d7e2] bg-white/80 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#15506d]">Guest messages</p><h1 className="mt-3 text-3xl font-extrabold">Guest chat</h1><p className="muted-copy mt-2 max-w-sm text-sm leading-6">Translate practical messages when connected. Your saved quick phrases remain available offline.</p></header>
 
       <form onSubmit={submitTranslation} className="paper-panel mt-6 p-4 sm:p-5">
         <fieldset><legend className="text-sm font-extrabold text-[#162338]">Choose languages</legend><div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-end gap-2"><label className="grid gap-1.5 text-xs font-extrabold uppercase tracking-[0.08em] text-[#5e7085]">From<select value={sourceLanguage} onChange={(event) => setSourceLanguage(event.target.value as LanguageCode)} className="min-h-10 rounded-lg border-[#c9d9df] bg-[#fbfdfd] px-2.5 text-sm font-bold text-[#162338] shadow-none">{Object.entries(languages).map(([code, name]) => <option key={code} value={code}>{name}</option>)}</select></label><button type="button" onClick={swapLanguages} className="mb-0.5 flex min-h-10 w-10 items-center justify-center rounded-lg !border-[#b7d7e2] !bg-[#eaf5f8] p-0 text-base font-extrabold !text-[#15506d] !shadow-none hover:!bg-[#d8edf4]" aria-label="Swap languages">⇄</button><label className="grid gap-1.5 text-xs font-extrabold uppercase tracking-[0.08em] text-[#5e7085]">To<select value={targetLanguage} onChange={(event) => setTargetLanguage(event.target.value as LanguageCode)} className="min-h-10 rounded-lg border-[#c9d9df] bg-[#fbfdfd] px-2.5 text-sm font-bold text-[#162338] shadow-none">{Object.entries(languages).map(([code, name]) => <option key={code} value={code}>{name}</option>)}</select></label></div></fieldset>

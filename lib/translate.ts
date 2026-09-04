@@ -6,7 +6,7 @@ export const languages = {
 } as const;
 
 export type LanguageCode = keyof typeof languages;
-export type TranslationTier = "online-ai" | "on-device-ai" | "cached-model" | "offline-basic";
+export type TranslationTier = "online-ai" | "on-device-ai" | "offline-basic";
 
 export interface TranslationResult {
   text: string;
@@ -29,14 +29,6 @@ type BrowserTranslatorApi = {
 };
 
 const browserTranslator = globalThis as typeof globalThis & { Translator?: BrowserTranslatorApi };
-
-const nllbModel = "Xenova/nllb-200-distilled-600M";
-const nllbLanguageCodes: Record<LanguageCode, string> = {
-  en: "eng_Latn",
-  ne: "npi_Deva",
-  hi: "hin_Deva",
-  bn: "ben_Beng",
-};
 
 const phrasebook: Record<string, Partial<Record<LanguageCode, string>>> = {
   "is the room available?": { ne: "कोठा उपलब्ध छ?", hi: "क्या कमरा उपलब्ध है?", bn: "ঘরটি কি খালি আছে?" },
@@ -83,48 +75,7 @@ async function translateWithChrome(text: string, sourceLanguage: LanguageCode, t
   return translator.translate(text);
 }
 
-async function translateWithCachedModel(text: string, sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
-  const { env, pipeline } = await import("@huggingface/transformers");
-  env.useBrowserCache = true;
-  env.cacheKey = "sajilostay-translation-models";
-  const translator = await pipeline("translation", nllbModel);
-  const output = await translator(text, { src_lang: nllbLanguageCodes[sourceLanguage], tgt_lang: nllbLanguageCodes[targetLanguage] });
-  const result = Array.isArray(output) ? output[0] : output;
-  if (!result || typeof result !== "object" || !("translation_text" in result) || typeof result.translation_text !== "string") {
-    throw new Error("The on-device model returned an unexpected response.");
-  }
-  return result.translation_text;
-}
-
-export function getTranslationModelPlan(sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
-  if (sourceLanguage === targetLanguage) return [];
-  return [nllbModel];
-}
-
-/** Downloads and browser-caches the multilingual model used by every supported offline pair. */
-export async function downloadTranslationModels(sourceLanguage: LanguageCode, targetLanguage: LanguageCode, onProgress?: (update: ModelDownloadProgress) => void) {
-  const models = getTranslationModelPlan(sourceLanguage, targetLanguage);
-  if (!models.length) throw new Error("This language pair does not have an on-device model.");
-  const { env, pipeline } = await import("@huggingface/transformers");
-  env.useBrowserCache = true;
-  env.cacheKey = "sajilostay-translation-models";
-  for (const [index, model] of models.entries()) {
-    const translator = await pipeline("translation", model, {
-      progress_callback: (update) => {
-        if (update.status === "progress_total") {
-          onProgress?.({ progress: Math.round(((index + update.progress / 100) / models.length) * 100) });
-        } else if (update.status === "progress") {
-          onProgress?.({ progress: 0, file: update.file });
-        }
-      },
-    });
-    await translator.dispose?.();
-  }
-  onProgress?.({ progress: 100 });
-  return models.length;
-}
-
-/** Translation uses no cloud tier in M3. Each fallback remains usable without a network connection. */
+/** Translation uses online AI when available, with browser and phrasebook fallbacks. */
 export async function translate(text: string, sourceLanguage: LanguageCode, targetLanguage: LanguageCode): Promise<TranslationResult> {
   if (!text.trim() || sourceLanguage === targetLanguage) {
     return { text, tier: "offline-basic" };
@@ -139,13 +90,6 @@ export async function translate(text: string, sourceLanguage: LanguageCode, targ
     if (translated) return { text: translated, tier: "on-device-ai" };
   } catch {
     // The API can be present but unavailable for this language pair or device.
-  }
-
-  try {
-    const translated = await translateWithCachedModel(text, sourceLanguage, targetLanguage);
-    if (translated) return { text: translated, tier: "cached-model" };
-  } catch {
-    // An uncached model cannot load offline; use the local phrasebook instead.
   }
 
   return translateFromPhrasebook(text, targetLanguage);
