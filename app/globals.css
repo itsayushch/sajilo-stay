@@ -1,11 +1,22 @@
 @import "tailwindcss";
 
+@source "../app";
+@source "../components";
+
+@theme {
+  --color-brand-50: #eef5f8;
+  --color-brand-100: #d9e8ee;
+  --color-brand-600: #15506d;
+  --color-brand-700: #103f59;
+  --color-brand-900: #102a3b;
+}
+
 :root {
-  --ink: #173126;
-  --leaf: #1f5d3b;
-  --mist: #e8efea;
-  --slate: #52645c;
-  --wood: #b97732;
+  --ink: #102a3b;
+  --leaf: #15506d;
+  --mist: #f3f6f8;
+  --slate: #49606d;
+  --wood: #a65d16;
   --paper: #ffffff;
 }
 
@@ -13,7 +24,7 @@
 
 body {
   margin: 0;
-  background: var(--mist);
+  background: linear-gradient(180deg, #eef5f8 0, var(--mist) 16rem);
   color: var(--ink);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -28,7 +39,7 @@ input:not([type="checkbox"]):not([type="radio"]), select, textarea {
   padding: 0.625rem 0.75rem;
   color: var(--ink);
   background: var(--paper);
-  border: 1px solid #729080;
+  border: 1px solid #9aafb9;
   border-radius: 0.5rem;
   box-shadow: inset 0 1px 1px rgb(23 49 38 / 6%);
 }
@@ -43,13 +54,13 @@ button {
   min-height: 2.75rem;
   padding: 0.625rem 1rem;
   color: #fff;
-  background: var(--leaf);
-  border: 1px solid var(--leaf);
+  background: #15506d;
+  border: 1px solid #15506d;
   border-radius: 0.5rem;
   font-weight: 700;
 }
 
-button:hover:not(:disabled) { background: #173126; border-color: #173126; }
+button:hover:not(:disabled) { background: #103f59; border-color: #103f59; }
 
 button:disabled { cursor: not-allowed; opacity: 0.55; }
 
@@ -81,22 +92,22 @@ button:not(:disabled):active, a:active { transform: translateY(1px); }
   left: 0;
   height: 13rem;
   content: "";
-  background: linear-gradient(160deg, #c9ddce 0%, #e8efea 75%);
-  border-bottom: 1px solid #b9ccc0;
+  background: radial-gradient(circle at 92% 5%, #d8e9f0 0, transparent 30%), linear-gradient(160deg, #e4f0f5 0%, #f3f6f8 75%);
+  border-bottom: 1px solid #cbd9df;
 }
 
 .paper-panel {
   background-color: var(--paper);
-  border: 1px solid #b9ccc0;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 0 rgb(23 49 38 / 12%);
+  border: 1px solid #d3dfe5;
+  border-radius: 1rem;
+  box-shadow: 0 10px 28px rgb(16 42 59 / 7%);
 }
 
 .register-panel {
   background-color: var(--paper);
-  border: 1px solid #aebfb5;
-  border-radius: 0.5rem;
-  box-shadow: 3px 3px 0 #d2dfd5;
+  border: 1px solid #d3dfe5;
+  border-radius: 1rem;
+  box-shadow: 0 10px 28px rgb(16 42 59 / 7%);
 }
 
 .home-link {
@@ -105,7 +116,7 @@ button:not(:disabled):active, a:active { transform: translateY(1px); }
   border-bottom: 1px solid currentColor;
 }
 
-.home-link:hover { color: #173126; }
+.home-link:hover { color: #102a3b; }
 
 .status-line { color: var(--leaf); }
 
