@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ description });
     }
     const copy = await askGroq(
-      "Write a warm, factual 70-word homestay listing in plain English. Turn the host notes into a complete guest-facing paragraph; do not quote, repeat, or label the notes. Do not invent facilities, prices, or locations. Return only the listing copy.",
+      "Write a warm, factual 70-word homestay listing in plain English. Turn the host notes into a complete guest-facing paragraph; do not quote, repeat, or label the notes. Do not invent facilities or locations. Do not mention prices. Return only the listing copy.",
       `Host notes:\n${body.notes}`,
     );
     if (!copy) return NextResponse.json({ error: "Online AI is unavailable." }, { status: 500 });

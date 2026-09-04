@@ -92,11 +92,18 @@ export function suggestPrice(notes: string): PriceBand {
   return { min: minimum, max: minimum + 500 * rooms, rooms, amenities: extras.map((extra) => extra.name) };
 }
 
+export function suggestRoomPrice(notes: string, capacity: number): PriceBand {
+  const base = suggestPrice(notes);
+  const capacityMultiplier = 1 + Math.max(0, capacity - 1) * 0.12;
+  const minimum = Math.round((base.min * capacityMultiplier) / 100) * 100;
+  return { ...base, min: minimum, max: minimum + 500 };
+}
+
 function templateCopy(notes: string, price: PriceBand) {
   const detail = notes.trim().replace(/\s+/g, " ");
   const roomLabel = price.rooms === 1 ? "one guest room" : `${price.rooms} guest rooms`;
   const amenityLine = price.amenities.length ? ` Guests can enjoy ${price.amenities.join(", ")}.` : " Guests can enjoy a simple, comfortable local stay.";
-  return `Welcome to our family homestay in a Darjeeling tea-garden village. We offer ${roomLabel} for travellers looking for a peaceful hills experience.${amenityLine} ${detail} Stay from ₹${price.min.toLocaleString("en-IN")} per night, with warm local hospitality and clear house guidance for every guest.`;
+  return `Welcome to our family homestay in a Darjeeling tea-garden village. We offer ${roomLabel} for travellers looking for a peaceful hills experience.${amenityLine} ${detail} Expect warm local hospitality and clear house guidance for every guest.`;
 }
 
 function cleanGeneratedListing(copy: string | null | undefined, notes: string) {
@@ -121,7 +128,7 @@ async function generateWithPromptApi(notes: string, price: PriceBand) {
   if (availability === "unavailable") return null;
   const session = await chromeLanguageModel.LanguageModel.create();
   try {
-    return await session.prompt(`Write a warm, accurate 70-word homestay listing in plain English. Turn the host notes into a complete guest-facing paragraph; do not quote, repeat, or label the notes. Do not invent facilities or locations. Mention a Darjeeling tea-garden village, a price band of ₹${price.min}–₹${price.max} per night, and only use these host notes: ${notes}`);
+    return await session.prompt(`Write a warm, accurate 70-word homestay listing in plain English. Turn the host notes into a complete guest-facing paragraph; do not quote, repeat, or label the notes. Do not invent facilities or locations. Mention a Darjeeling tea-garden village only if it fits naturally. Use only these host notes: ${notes}`);
   } finally {
     session.destroy?.();
   }
@@ -148,7 +155,7 @@ async function generateWithLocalModel(notes: string, price: PriceBand) {
     },
     {
       role: "user",
-      content: `Write a guest-ready homestay listing of about 70 words, not a restatement of the host notes. The price band is ₹${price.min}–₹${price.max} per night. Mention a Darjeeling tea-garden village only if it fits naturally. Use only these host notes: ${notes}`,
+      content: `Write a guest-ready homestay listing of about 70 words, not a restatement of the host notes. Mention a Darjeeling tea-garden village only if it fits naturally. Use only these host notes: ${notes}`,
     },
   ], { max_new_tokens: 130, do_sample: false });
   const copy = extractGeneratedText(output);
@@ -165,7 +172,7 @@ export async function generateRoomDescription(name: string, capacity: number, no
   const onlineCopy = await requestOnlineAi({ action: "generateRoomDescription", name, capacity, notes });
   const validOnlineCopy = cleanGeneratedListing(onlineCopy, notes);
   if (validOnlineCopy) return { copy: validOnlineCopy, tier: "online-ai" };
-  try {
+  if (await isListingModelDownloaded()) try {
     const copy = await generateWithPromptApi(`Room name: ${name}. Sleeps ${capacity}. ${notes}`, { min: 0, max: 0, rooms: 1, amenities: [] });
     const validCopy = cleanGeneratedListing(copy, notes);
     if (validCopy) return { copy: validCopy, tier: "on-device-ai" };
