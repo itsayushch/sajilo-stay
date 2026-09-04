@@ -130,7 +130,7 @@ button:not(:disabled):active, a:active { transform: translateY(1px); }
 .home-link {
   color: var(--leaf);
   text-decoration: none;
-  border-bottom: 1px solid rgb(23 107 135 / 35%);
+  border: 0;
 }
 
 .home-link:hover { color: #102a3b; }
