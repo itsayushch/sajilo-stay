@@ -51,12 +51,13 @@ input:not([type="checkbox"]):not([type="radio"])::placeholder, textarea::placeho
 select { appearance: auto; }
 
 button {
-  min-height: 2.75rem;
-  padding: 0.5rem 0.75rem;
+  min-height: 2.5rem;
+  padding: 0.375rem 0.625rem;
   color: #fff;
   background: #15506d;
   border: 1px solid #15506d;
   border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
