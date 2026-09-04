@@ -3,7 +3,9 @@ import type { NextConfig } from "next";
 
 const withPWA = withPWAInit({
   dest: "public",
-  register: true,
+  // Register in a client component so a newly activated worker can refresh the
+  // document and keep App Router HTML aligned with its JavaScript chunks.
+  register: false,
   disable: process.env.NODE_ENV === "development",
 });
 
