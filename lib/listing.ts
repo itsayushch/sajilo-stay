@@ -29,8 +29,11 @@ async function loadLocalListingGenerator(onProgress?: (update: ModelDownloadProg
   return pipeline("text-generation", localListingModel, {
     dtype: "q4f16",
     progress_callback: (update) => {
-      if (update.status !== "progress" && update.status !== "progress_total") return;
-      onProgress?.({ progress: Math.round(update.progress), file: "file" in update ? update.file : undefined });
+      if (update.status === "progress_total") {
+        onProgress?.({ progress: Math.round(update.progress) });
+      } else if (update.status === "progress") {
+        onProgress?.({ progress: 0, file: update.file });
+      }
     },
   });
 }

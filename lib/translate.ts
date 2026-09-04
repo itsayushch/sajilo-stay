@@ -111,8 +111,11 @@ export async function downloadTranslationModels(sourceLanguage: LanguageCode, ta
   for (const [index, model] of models.entries()) {
     const translator = await pipeline("translation", model, {
       progress_callback: (update) => {
-        if (update.status !== "progress" && update.status !== "progress_total") return;
-        onProgress?.({ progress: Math.round(((index + update.progress / 100) / models.length) * 100), file: "file" in update ? update.file : undefined });
+        if (update.status === "progress_total") {
+          onProgress?.({ progress: Math.round(((index + update.progress / 100) / models.length) * 100) });
+        } else if (update.status === "progress") {
+          onProgress?.({ progress: 0, file: update.file });
+        }
       },
     });
     await translator.dispose?.();

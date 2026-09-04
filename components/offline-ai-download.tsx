@@ -21,8 +21,12 @@ export function OfflineAiDownload({ preferredLanguage, onContinue }: { preferred
     setStatus("Preparing offline AI downloads. Keep this screen open.");
     let completedSteps = 0;
     const updateProgress = (value: number, file?: string) => {
-      setProgress(Math.round(((completedSteps + value / 100) / totalSteps) * 100));
-      if (file) setStatus(`Downloading ${file.split("/").pop()}…`);
+      const nextProgress = Math.round(((completedSteps + value / 100) / totalSteps) * 100);
+      setProgress((current) => {
+        const stableProgress = Math.max(current ?? 0, nextProgress);
+        if (file) setStatus(`Downloading ${file.split("/").pop()}… ${stableProgress}%`);
+        return stableProgress;
+      });
     };
     try {
       const firstDirection = getTranslationModelPlan(hostLanguage, "en").length;
