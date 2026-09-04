@@ -21,13 +21,28 @@ const chromeLanguageModel = globalThis as typeof globalThis & { LanguageModel?: 
 // A compact instruction-tuned model fetched and cached by Transformers.js on first use.
 // It is intentionally remote rather than bundled so the installed app stays small.
 const localListingModel = "onnx-community/SmolLM2-135M-Instruct-ONNX";
+const listingModelCacheKey = "sajilostay-listing-model-v2";
+const listingModelFiles = ["config.json", "tokenizer.json", "onnx/model_q4.onnx"];
+
+export async function isListingModelDownloaded() {
+  if (typeof window === "undefined" || !("caches" in window)) return false;
+  try {
+    const cache = await caches.open(listingModelCacheKey);
+    const baseUrl = `https://huggingface.co/${localListingModel}/resolve/main/`;
+    const entries = await Promise.all(listingModelFiles.map((file) => cache.match(`${baseUrl}${file}`)));
+    return entries.every(Boolean);
+  } catch (error) {
+    console.warn("Sajilo Stay could not check the Lite AI cache.", error);
+    return false;
+  }
+}
 
 async function loadLocalListingGenerator(onProgress?: (update: ModelDownloadProgress) => void) {
   const { env, pipeline } = await import("@huggingface/transformers");
   env.useBrowserCache = true;
   // Keep this cache separate from the older q4f16 model, which is not reliable
   // in ONNX Runtime Web on some phones.
-  env.cacheKey = "sajilostay-listing-model-v2";
+  env.cacheKey = listingModelCacheKey;
   return pipeline("text-generation", localListingModel, {
     // q4 is the standard WASM-friendly quantization. q4f16 can load a graph
     // with unsupported precision-cast nodes in some mobile browsers.
