@@ -41,12 +41,12 @@ export function Checklist() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-lg px-4 py-6">
-      <Link href="/" className="text-sm font-bold text-[#1f5d3b]">← Home</Link>
-      <header className="mt-6"><h1 className="text-3xl font-bold">Hosting Checklist</h1><p className="mt-2 text-base leading-6 text-slate-700">A simple guide for a safe, welcoming stay.</p></header>
-      <section aria-label="Checklist progress" className="mt-6 rounded-xl border border-green-200 bg-white p-4 shadow-sm"><p className="font-bold">{completed} of {checklistItems.length} ready</p><div className="mt-3 h-3 overflow-hidden rounded-full bg-green-100"><div className="h-full rounded-full bg-[#1f5d3b] transition-all" style={{ width: `${(completed / checklistItems.length) * 100}%` }} /></div></section>
-      <ul className="mt-6 grid gap-3">{checklistItems.map((item) => { const checked = Boolean(checkedItems[item.id]); return <li key={item.id} className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200"><label className="flex cursor-pointer items-start gap-4"><input type="checkbox" checked={checked} onChange={() => toggleItem(item.id)} className="mt-1 h-6 w-6 accent-[#1f5d3b]" /><span><span className="block text-lg font-bold">{item.title}</span><span className="mt-1 block text-sm leading-5 text-slate-700">{item.detail}</span></span></label></li>; })}</ul>
-      <p className="mt-5 text-sm font-medium text-[#1f5d3b]" role="status">{notice}</p>
+    <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
+      <Link href="/" className="home-link text-sm font-bold">Home</Link>
+      <header className="mt-6"><p className="text-sm font-bold text-[#1f5d3b]">Before guests arrive</p><h1 className="mt-1 text-4xl font-bold">Hosting checklist</h1><p className="muted-copy mt-2 text-base leading-6">A simple guide for a safe, welcoming stay.</p></header>
+      <section aria-label="Checklist progress" className="paper-panel mt-6 p-4"><p className="sign-title text-xl font-bold">{completed} of {checklistItems.length} ready</p><div className="mt-3 h-2 overflow-hidden rounded-full bg-[#d7e6da]"><div className="h-full rounded-full bg-[#1f5d3b] transition-all" style={{ width: `${(completed / checklistItems.length) * 100}%` }} /></div></section>
+      <ul className="mt-6 grid gap-3">{checklistItems.map((item) => { const checked = Boolean(checkedItems[item.id]); return <li key={item.id} className={checked ? "border-l-4 border-[#1f5d3b] bg-white p-4" : "border-l-4 border-[#b9ccc0] bg-white p-4"}><label className="flex cursor-pointer items-start gap-4"><input type="checkbox" checked={checked} onChange={() => toggleItem(item.id)} className="mt-1 h-6 w-6 accent-[#1f5d3b]" /><span><span className="sign-title block text-xl font-bold">{item.title}</span><span className="muted-copy mt-1 block text-sm leading-5">{item.detail}</span></span></label></li>; })}</ul>
+      <p className="status-line mt-5 text-sm font-bold" role="status">{notice}</p>
     </main>
   );
 }

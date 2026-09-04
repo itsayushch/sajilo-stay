@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #172118;
+  --ink: #173126;
   --leaf: #1f5d3b;
-  --mist: #f4f7f1;
-  --card: #ffffff;
+  --mist: #e8efea;
+  --slate: #52645c;
+  --wood: #b97732;
+  --paper: #ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -13,12 +15,76 @@ body {
   margin: 0;
   background: var(--mist);
   color: var(--ink);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 button, input, textarea, select { font: inherit; }
 
 button, input, select, textarea { font-size: 16px; }
+
+h1, h2, h3, .sign-title {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.02em;
+}
+
+button, a, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled), a {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+button:not(:disabled):active, a:active { transform: translateY(1px); }
+
+.site-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.site-shell::before {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 13rem;
+  content: "";
+  background: linear-gradient(160deg, #c9ddce 0%, #e8efea 75%);
+  border-bottom: 1px solid #b9ccc0;
+}
+
+.paper-panel {
+  background-color: var(--paper);
+  border: 1px solid #b9ccc0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 0 rgb(23 49 38 / 12%);
+}
+
+.register-panel {
+  background-color: var(--paper);
+  border: 1px solid #aebfb5;
+  border-radius: 0.5rem;
+  box-shadow: 3px 3px 0 #d2dfd5;
+}
+
+.home-link {
+  color: var(--leaf);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+.home-link:hover { color: #173126; }
+
+.status-line { color: var(--leaf); }
+
+.wood-accent { color: #8a551e; }
+
+.muted-copy { color: var(--slate); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
 
 button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
   outline: 3px solid #d7a65a;

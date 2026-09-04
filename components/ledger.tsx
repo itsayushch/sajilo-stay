@@ -118,24 +118,25 @@ export function Ledger() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-lg px-4 py-6">
-      <Link href="/" className="text-sm font-bold text-[#1f5d3b]">← Home</Link>
+    <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
+      <Link href="/" className="home-link text-sm font-bold">Home</Link>
       <header className="mt-6">
-        <h1 className="text-3xl font-bold">Bookings & Ledger</h1>
-        <p className="mt-2 text-base leading-6 text-slate-700">Keep guest dates and payments safely on this phone.</p>
+        <p className="text-sm font-bold text-[#1f5d3b]">Your hosting register</p>
+        <h1 className="mt-1 text-4xl font-bold">Bookings & cash</h1>
+        <p className="muted-copy mt-2 text-base leading-6">Keep guest dates and payments safely on this phone.</p>
       </header>
 
       <section aria-label="Ledger totals" className="mt-6 grid grid-cols-2 gap-3">
-        <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200"><p className="text-sm text-slate-700">Expected</p><p className="mt-1 text-xl font-bold">{formatAmount(totals.all)}</p></div>
-        <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200"><p className="text-sm text-slate-700">Received</p><p className="mt-1 text-xl font-bold text-[#1f5d3b]">{formatAmount(totals.paid)}</p></div>
+        <div className="paper-panel p-4"><p className="muted-copy text-sm font-semibold">Expected</p><p className="sign-title mt-1 text-2xl font-bold">{formatAmount(totals.all)}</p></div>
+        <div className="border-b-4 border-[#b97732] bg-white p-4"><p className="muted-copy text-sm font-semibold">Received</p><p className="sign-title wood-accent mt-1 text-2xl font-bold">{formatAmount(totals.paid)}</p></div>
       </section>
 
-      <section className="mt-6 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-        <div className="flex items-center justify-between gap-4"><h2 className="text-xl font-bold">Your bookings</h2><button type="button" onClick={exportCsv} disabled={!bookings.length} className="rounded-lg border border-[#1f5d3b] px-3 py-2 text-sm font-bold text-[#1f5d3b] disabled:cursor-not-allowed disabled:opacity-50">Export CSV</button></div>
-        {bookings.length ? <ul className="mt-4 divide-y divide-slate-200">{bookings.map((booking) => <li key={booking.id} className="py-4 first:pt-0"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{booking.guestName}</p><p className="mt-1 text-sm text-slate-700">{booking.checkIn} to {booking.checkOut}</p><p className="mt-1 text-sm font-semibold">{formatAmount(booking.amount)} · <span className={booking.status === "paid" ? "text-[#1f5d3b]" : "text-amber-700"}>{booking.status === "paid" ? "Paid" : "Pending"}</span></p>{booking.notes && <p className="mt-1 text-sm text-slate-600">{booking.notes}</p>}</div><div className="flex flex-col items-end gap-1"><button type="button" onClick={() => editBooking(booking)} className="rounded-lg px-3 py-2 text-sm font-bold text-[#1f5d3b] underline">Edit</button><button type="button" onClick={() => removeBooking(booking)} className="rounded-lg px-3 py-2 text-sm font-bold text-red-700 underline">Remove</button></div></div></li>)}</ul> : <p className="mt-4 text-sm text-slate-700">{notice || "No bookings yet."}</p>}
+      <section className="register-panel mt-6 p-4">
+        <div className="flex items-center justify-between gap-4 border-b border-[#b9ccc0] pb-3"><h2 className="text-2xl font-bold">Your bookings</h2><button type="button" onClick={exportCsv} disabled={!bookings.length} className="min-h-11 rounded-md border border-[#1f5d3b] px-3 text-sm font-bold text-[#1f5d3b] disabled:cursor-not-allowed disabled:opacity-50">Export CSV</button></div>
+        {bookings.length ? <ul className="mt-1 divide-y divide-[#c7d4ca]">{bookings.map((booking) => <li key={booking.id} className="py-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{booking.guestName}</p><p className="muted-copy mt-1 text-sm">{booking.checkIn} to {booking.checkOut}</p><p className="mt-1 text-sm font-semibold">{formatAmount(booking.amount)} · <span className={booking.status === "paid" ? "text-[#1f5d3b]" : "wood-accent"}>{booking.status === "paid" ? "Paid" : "Pending"}</span></p>{booking.notes && <p className="muted-copy mt-1 text-sm">{booking.notes}</p>}</div><div className="flex flex-col items-end gap-1"><button type="button" onClick={() => editBooking(booking)} className="min-h-10 rounded-lg px-3 text-sm font-bold text-[#1f5d3b] underline">Edit</button><button type="button" onClick={() => removeBooking(booking)} className="min-h-10 rounded-lg px-3 text-sm font-bold text-red-700 underline">Remove</button></div></div></li>)}</ul> : <p className="muted-copy mt-4 text-sm">{notice || "No bookings yet."}</p>}
       </section>
 
-      <section className="mt-6 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+      <section className="paper-panel mt-6 p-4">
         <h2 className="text-xl font-bold">{editingId ? "Edit booking" : "Add a booking"}</h2>
         <form onSubmit={submitBooking} className="mt-4 grid gap-4">
           <label className="grid gap-1 text-sm font-semibold">Guest name<input required value={form.guestName} onChange={(event) => updateForm("guestName", event.target.value)} className="min-h-12 rounded-lg border border-slate-300 px-3" /></label>
@@ -145,7 +146,7 @@ export function Ledger() {
           <div className="flex gap-3"><button type="submit" disabled={isSaving} className="min-h-12 rounded-lg bg-[#1f5d3b] px-4 font-bold text-white disabled:opacity-60">{isSaving ? "Saving…" : editingId ? "Save changes" : "Add booking"}</button>{editingId && <button type="button" onClick={resetForm} className="min-h-12 rounded-lg px-4 font-bold text-slate-700 underline">Cancel</button>}</div>
         </form>
       </section>
-      <p className="mt-4 text-sm font-medium text-[#1f5d3b]" role="status">{bookings.length ? notice : ""}</p>
+      <p className="status-line mt-4 text-sm font-bold" role="status">{bookings.length ? notice : ""}</p>
     </main>
   );
 }
