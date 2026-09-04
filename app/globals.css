@@ -40,6 +40,7 @@ body {
   line-height: 1.5;
 }
 
+@layer base {
 button, input, textarea, select { font: inherit; }
 
 button, input, select, textarea { font-size: 16px; }
@@ -77,6 +78,7 @@ button {
 button:hover:not(:disabled) { background: linear-gradient(135deg, #103f59, #15506d); border-color: #103f59; box-shadow: 0 5px 12px rgb(15 49 67 / 18%); }
 
 button:disabled { cursor: not-allowed; opacity: 0.55; }
+}
 
 h1, h2, h3, .sign-title {
   font-family: "Manrope", system-ui, sans-serif;
