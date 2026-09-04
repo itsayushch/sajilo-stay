@@ -20,7 +20,7 @@ Each AI result displays the source that answered it so the host and judges can s
 
 | Capability | Tier 1: optional online | Tier 2: on-device | Tier 3: local fallback | Tier 4: works with no model |
 | --- | --- | --- | --- | --- |
-| Guest translation | Groq `openai/gpt-oss-20b` through a server-side Next.js route | Chrome Translator API, when supported | Transformers.js, lazy-loaded q8 `Xenova/opus-mt-*` OPUS translation pairs and cached in browser Cache Storage | A Nepali/Hindi/Bengali phrasebook for common availability, price, directions, food, and house-rule messages |
+| Guest translation | Groq `openai/gpt-oss-20b` through a server-side Next.js route | Chrome Translator API, when supported | Transformers.js, lazy-loaded q8 `Xenova/opus-mt-*` OPUS translation pairs cached in browser Cache Storage; Nepali/Hindi/Bengali requests without a direct model pivot through English locally | A Nepali/Hindi/Bengali phrasebook for common availability, price, directions, food, and house-rule messages |
 | Listing writing | Groq `openai/gpt-oss-20b` | Chrome Prompt API / Gemini Nano, when supported | Not used: a useful lightweight local text-generation model is not included | A factual listing template based on the host notes, plus a deterministic price band |
 
 The **Force offline mode** setting always bypasses Groq, even with a live connection. If Chrome AI or a local model is unavailable, the relevant static fallback is used automatically. An uncached translation model is never required while offline; the phrasebook remains available instead.

@@ -95,6 +95,15 @@ async function translateWithCachedModel(text: string, sourceLanguage: LanguageCo
   return result.translation_text;
 }
 
+/** Uses the already-supported English model pairs for direct Nepali/Hindi/Bengali translation. */
+async function translateWithEnglishPivot(text: string, sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
+  if (sourceLanguage === "en" || targetLanguage === "en") return null;
+  const English = "en" as const;
+  const inEnglish = await translateWithCachedModel(text, sourceLanguage, English);
+  if (!inEnglish) return null;
+  return translateWithCachedModel(inEnglish, English, targetLanguage);
+}
+
 /** Translation uses no cloud tier in M3. Each fallback remains usable without a network connection. */
 export async function translate(text: string, sourceLanguage: LanguageCode, targetLanguage: LanguageCode): Promise<TranslationResult> {
   if (!text.trim() || sourceLanguage === targetLanguage) {
@@ -117,6 +126,13 @@ export async function translate(text: string, sourceLanguage: LanguageCode, targ
     if (translated) return { text: translated, tier: "cached-model" };
   } catch {
     // An uncached model cannot load offline; use the local phrasebook instead.
+  }
+
+  try {
+    const translated = await translateWithEnglishPivot(text, sourceLanguage, targetLanguage);
+    if (translated) return { text: translated, tier: "cached-model", note: "Translated through English using on-device models." };
+  } catch {
+    // Either side of the English pivot is not cached or could not run on this device.
   }
 
   return translateFromPhrasebook(text, targetLanguage);
