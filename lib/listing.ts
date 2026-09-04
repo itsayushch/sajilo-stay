@@ -99,13 +99,29 @@ function templateCopy(notes: string, price: PriceBand) {
   return `Welcome to our family homestay in a Darjeeling tea-garden village. We offer ${roomLabel} for travellers looking for a peaceful hills experience.${amenityLine} ${detail} Stay from ₹${price.min.toLocaleString("en-IN")} per night, with warm local hospitality and clear house guidance for every guest.`;
 }
 
+function cleanGeneratedListing(copy: string | null | undefined, notes: string) {
+  if (!copy) return null;
+  const cleaned = copy.trim().replace(/^(assistant|listing|description)\s*:\s*/i, "");
+  const normalizedCopy = cleaned.toLocaleLowerCase().replace(/\s+/g, " ");
+  const normalizedNotes = notes.trim().toLocaleLowerCase().replace(/\s+/g, " ");
+  if (cleaned.length < 40 || normalizedCopy === normalizedNotes || normalizedCopy.startsWith("host notes:")) return null;
+
+  const noteWords = normalizedNotes.split(" ").filter(Boolean);
+  const copyWords = normalizedCopy.split(" ").filter(Boolean);
+  const copiedNoteWords = noteWords.filter((word) => copyWords.includes(word)).length;
+  // Small local models occasionally echo the input. A real listing needs
+  // appreciably more than the rough note, even when it preserves its facts.
+  if (copyWords.length <= noteWords.length + 5 && copiedNoteWords / Math.max(noteWords.length, 1) > 0.85) return null;
+  return cleaned;
+}
+
 async function generateWithPromptApi(notes: string, price: PriceBand) {
   if (!chromeLanguageModel.LanguageModel) return null;
   const availability = await chromeLanguageModel.LanguageModel.availability();
   if (availability === "unavailable") return null;
   const session = await chromeLanguageModel.LanguageModel.create();
   try {
-    return await session.prompt(`Write a warm, accurate 70-word homestay listing in plain English. Do not invent facilities or locations. Mention a Darjeeling tea-garden village, a price band of ₹${price.min}–₹${price.max} per night, and only use these host notes: ${notes}`);
+    return await session.prompt(`Write a warm, accurate 70-word homestay listing in plain English. Turn the host notes into a complete guest-facing paragraph; do not quote, repeat, or label the notes. Do not invent facilities or locations. Mention a Darjeeling tea-garden village, a price band of ₹${price.min}–₹${price.max} per night, and only use these host notes: ${notes}`);
   } finally {
     session.destroy?.();
   }
@@ -128,11 +144,11 @@ async function generateWithLocalModel(notes: string, price: PriceBand) {
   const output = await generator([
     {
       role: "system",
-      content: "Write concise, warm and factual homestay listings in plain English. Never invent facilities, prices, locations, or promises. Return only the finished listing paragraph.",
+      content: "Write concise, warm and factual homestay listings in plain English. Turn notes into a complete guest-facing paragraph; never echo, quote, or label the notes. Never invent facilities, prices, locations, or promises. Return only the finished listing paragraph.",
     },
     {
       role: "user",
-      content: `Write a guest-ready homestay listing of about 70 words. The price band is ₹${price.min}–₹${price.max} per night. Mention a Darjeeling tea-garden village only if it fits naturally. Use only these host notes: ${notes}`,
+      content: `Write a guest-ready homestay listing of about 70 words, not a restatement of the host notes. The price band is ₹${price.min}–₹${price.max} per night. Mention a Darjeeling tea-garden village only if it fits naturally. Use only these host notes: ${notes}`,
     },
   ], { max_new_tokens: 130, do_sample: false });
   const copy = extractGeneratedText(output);
@@ -143,16 +159,19 @@ export async function generateListingCopy(notes: string): Promise<{ copy: string
   const price = suggestPrice(notes);
   const { requestOnlineAi } = await import("@/lib/online-ai");
   const onlineCopy = await requestOnlineAi({ action: "generateListing", notes });
-  if (onlineCopy) return { copy: onlineCopy, tier: "online-ai", price };
+  const validOnlineCopy = cleanGeneratedListing(onlineCopy, notes);
+  if (validOnlineCopy) return { copy: validOnlineCopy, tier: "online-ai", price };
   try {
     const copy = await generateWithPromptApi(notes, price);
-    if (copy?.trim()) return { copy: copy.trim(), tier: "on-device-ai", price };
+    const validCopy = cleanGeneratedListing(copy, notes);
+    if (validCopy) return { copy: validCopy, tier: "on-device-ai", price };
   } catch {
     // Gemini Nano may be absent, unsupported, or unable to download on this device.
   }
   try {
     const copy = await generateWithLocalModel(notes, price);
-    if (copy) return { copy, tier: "on-device-ai", price };
+    const validCopy = cleanGeneratedListing(copy, notes);
+    if (validCopy) return { copy: validCopy, tier: "on-device-ai", price };
   } catch (error) {
     // The first model download may be unavailable; retain a useful offline fallback.
     console.warn("Sajilo Stay could not run the on-device listing model.", error);
