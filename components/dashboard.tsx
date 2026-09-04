@@ -7,22 +7,18 @@ import { Onboarding } from "@/components/onboarding";
 
 export function Dashboard() {
   const [storageStatus, setStorageStatus] = useState("Checking offline storage…");
-  const [profile, setProfile] = useState<HostProfile | null | undefined>(undefined);
+  const [profile, setProfile] = useState<HostProfile | null>(null);
 
   useEffect(() => {
-    const storageTimeout = window.setTimeout(() => {
-      setStorageStatus("Offline storage is taking too long. You can try again after restarting the app.");
-      setProfile((current) => current === undefined ? null : current);
-    }, 2_000);
+    const storageTimeout = window.setTimeout(() => setStorageStatus("Offline storage is taking too long. You can still start your profile below."), 2_000);
     verifyDatabase()
       .then(getHostProfile)
-      .then((savedProfile) => { setStorageStatus("Offline storage is ready"); setProfile(savedProfile); })
+      .then((savedProfile) => { setStorageStatus("Offline storage is ready"); setProfile(savedProfile ?? null); })
       .catch(() => { setStorageStatus("Offline storage is unavailable in this browser"); setProfile(null); })
       .finally(() => window.clearTimeout(storageTimeout));
     return () => window.clearTimeout(storageTimeout);
   }, []);
 
-  if (profile === undefined) return <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6"><p className="text-base font-semibold text-[#1f5d3b]">Preparing Sajilo Stay…</p></main>;
   if (!profile) return <Onboarding onComplete={setProfile} />;
 
   return (
