@@ -31,11 +31,6 @@ export function OfflineAiDownload({ preferredLanguage, onContinue }: { preferred
         await downloadTranslationModels(hostLanguage, "en", ({ progress: value, file }) => updateProgress(value, file));
         completedSteps += firstDirection;
       }
-      const secondDirection = getTranslationModelPlan("en", hostLanguage).length;
-      if (secondDirection) {
-        await downloadTranslationModels("en", hostLanguage, ({ progress: value, file }) => updateProgress(value, file));
-        completedSteps += secondDirection;
-      }
       setStatus("Downloading the on-device listing writer…");
       await downloadListingModel(({ progress: value, file }) => updateProgress(value, file));
       setProgress(100);

@@ -30,13 +30,12 @@ type BrowserTranslatorApi = {
 
 const browserTranslator = globalThis as typeof globalThis & { Translator?: BrowserTranslatorApi };
 
-const modelForPair: Partial<Record<`${LanguageCode}-${LanguageCode}`, string>> = {
-  "en-ne": "Xenova/opus-mt-en-ne",
-  "ne-en": "Xenova/opus-mt-ne-en",
-  "en-hi": "Xenova/opus-mt-en-hi",
-  "hi-en": "Xenova/opus-mt-hi-en",
-  "en-bn": "Xenova/opus-mt-en-bn",
-  "bn-en": "Xenova/opus-mt-bn-en",
+const nllbModel = "Xenova/nllb-200-distilled-600M";
+const nllbLanguageCodes: Record<LanguageCode, string> = {
+  en: "eng_Latn",
+  ne: "npi_Deva",
+  hi: "hin_Deva",
+  bn: "ben_Beng",
 };
 
 const phrasebook: Record<string, Partial<Record<LanguageCode, string>>> = {
@@ -85,14 +84,11 @@ async function translateWithChrome(text: string, sourceLanguage: LanguageCode, t
 }
 
 async function translateWithCachedModel(text: string, sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
-  const model = modelForPair[`${sourceLanguage}-${targetLanguage}`];
-  if (!model) return null;
-
   const { env, pipeline } = await import("@huggingface/transformers");
   env.useBrowserCache = true;
   env.cacheKey = "sajilostay-translation-models";
-  const translator = await pipeline("translation", model, { dtype: "q8" });
-  const output = await translator(text);
+  const translator = await pipeline("translation", nllbModel);
+  const output = await translator(text, { src_lang: nllbLanguageCodes[sourceLanguage], tgt_lang: nllbLanguageCodes[targetLanguage] });
   const result = Array.isArray(output) ? output[0] : output;
   if (!result || typeof result !== "object" || !("translation_text" in result) || typeof result.translation_text !== "string") {
     throw new Error("The on-device model returned an unexpected response.");
@@ -102,15 +98,10 @@ async function translateWithCachedModel(text: string, sourceLanguage: LanguageCo
 
 export function getTranslationModelPlan(sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
   if (sourceLanguage === targetLanguage) return [];
-  const direct = modelForPair[`${sourceLanguage}-${targetLanguage}`];
-  if (direct) return [direct];
-  if (sourceLanguage === "en" || targetLanguage === "en") return [];
-  const toEnglish = modelForPair[`${sourceLanguage}-en`];
-  const fromEnglish = modelForPair[`en-${targetLanguage}`];
-  return toEnglish && fromEnglish ? [toEnglish, fromEnglish] : [];
+  return [nllbModel];
 }
 
-/** Downloads and browser-caches the direct model or two English-pivot models for an offline pair. */
+/** Downloads and browser-caches the multilingual model used by every supported offline pair. */
 export async function downloadTranslationModels(sourceLanguage: LanguageCode, targetLanguage: LanguageCode, onProgress?: (update: ModelDownloadProgress) => void) {
   const models = getTranslationModelPlan(sourceLanguage, targetLanguage);
   if (!models.length) throw new Error("This language pair does not have an on-device model.");
@@ -119,7 +110,6 @@ export async function downloadTranslationModels(sourceLanguage: LanguageCode, ta
   env.cacheKey = "sajilostay-translation-models";
   for (const [index, model] of models.entries()) {
     const translator = await pipeline("translation", model, {
-      dtype: "q8",
       progress_callback: (update) => {
         if (update.status !== "progress" && update.status !== "progress_total") return;
         onProgress?.({ progress: Math.round(((index + update.progress / 100) / models.length) * 100), file: "file" in update ? update.file : undefined });
@@ -129,15 +119,6 @@ export async function downloadTranslationModels(sourceLanguage: LanguageCode, ta
   }
   onProgress?.({ progress: 100 });
   return models.length;
-}
-
-/** Uses the already-supported English model pairs for direct Nepali/Hindi/Bengali translation. */
-async function translateWithEnglishPivot(text: string, sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
-  if (sourceLanguage === "en" || targetLanguage === "en") return null;
-  const English = "en" as const;
-  const inEnglish = await translateWithCachedModel(text, sourceLanguage, English);
-  if (!inEnglish) return null;
-  return translateWithCachedModel(inEnglish, English, targetLanguage);
 }
 
 /** Translation uses no cloud tier in M3. Each fallback remains usable without a network connection. */
@@ -162,13 +143,6 @@ export async function translate(text: string, sourceLanguage: LanguageCode, targ
     if (translated) return { text: translated, tier: "cached-model" };
   } catch {
     // An uncached model cannot load offline; use the local phrasebook instead.
-  }
-
-  try {
-    const translated = await translateWithEnglishPivot(text, sourceLanguage, targetLanguage);
-    if (translated) return { text: translated, tier: "cached-model", note: "Translated through English using on-device models." };
-  } catch {
-    // Either side of the English pivot is not cached or could not run on this device.
   }
 
   return translateFromPhrasebook(text, targetLanguage);
