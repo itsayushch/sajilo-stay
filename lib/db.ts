@@ -44,6 +44,15 @@ export interface Listing {
   lastUpdated: string;
 }
 
+export type RoomStatus = "available" | "occupied" | "maintenance";
+
+export interface Room {
+  id: string;
+  name: string;
+  capacity: number;
+  status: RoomStatus;
+}
+
 export interface SajiloStayDB extends DBSchema {
   host_profile: {
     key: string;
@@ -67,6 +76,10 @@ export interface SajiloStayDB extends DBSchema {
     key: string;
     value: ChecklistState;
   };
+  rooms: {
+    key: string;
+    value: Room;
+  };
   // Legacy store retained in the type only so version 4 can delete it safely.
   app_settings: {
     key: string;
@@ -81,7 +94,7 @@ export function getDatabase() {
     throw new Error("IndexedDB is only available in the browser.");
   }
 
-  databasePromise ??= openDB<SajiloStayDB>("sajilo-stay", 4, {
+  databasePromise ??= openDB<SajiloStayDB>("sajilo-stay", 5, {
     upgrade(database, _oldVersion, _newVersion, transaction) {
       if (!database.objectStoreNames.contains("host_profile")) database.createObjectStore("host_profile", { keyPath: "id" });
       if (!database.objectStoreNames.contains("listing")) database.createObjectStore("listing", { keyPath: "id" });
@@ -100,6 +113,7 @@ export function getDatabase() {
         if (!messages.indexNames.contains("by-timestamp")) messages.createIndex("by-timestamp", "timestamp");
       }
       if (!database.objectStoreNames.contains("checklist_state")) database.createObjectStore("checklist_state", { keyPath: "itemId" });
+      if (!database.objectStoreNames.contains("rooms")) database.createObjectStore("rooms", { keyPath: "id" });
       if (database.objectStoreNames.contains("app_settings")) database.deleteObjectStore("app_settings");
     },
   });
@@ -191,4 +205,19 @@ export async function saveListing(listing: Listing) {
 export async function deleteListing() {
   const database = await getDatabase();
   await database.delete("listing", "primary");
+}
+
+export async function getRooms() {
+  const database = await getDatabase();
+  return (await database.getAll("rooms")).sort((first, second) => first.name.localeCompare(second.name, undefined, { numeric: true }));
+}
+
+export async function saveRoom(room: Room) {
+  const database = await getDatabase();
+  await database.put("rooms", room);
+}
+
+export async function deleteRoom(id: string) {
+  const database = await getDatabase();
+  await database.delete("rooms", id);
 }
