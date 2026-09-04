@@ -30,6 +30,12 @@ async function loadLocalListingGenerator() {
 
 let localListingGenerator: Promise<Awaited<ReturnType<typeof loadLocalListingGenerator>>> | null = null;
 
+/** Downloads and browser-caches the local listing writer without generating a listing. */
+export async function downloadListingModel() {
+  localListingGenerator ??= loadLocalListingGenerator();
+  await localListingGenerator;
+}
+
 function contains(notes: string, terms: string[]) {
   return terms.some((term) => notes.includes(term));
 }

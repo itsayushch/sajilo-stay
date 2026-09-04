@@ -95,6 +95,30 @@ async function translateWithCachedModel(text: string, sourceLanguage: LanguageCo
   return result.translation_text;
 }
 
+export function getTranslationModelPlan(sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
+  if (sourceLanguage === targetLanguage) return [];
+  const direct = modelForPair[`${sourceLanguage}-${targetLanguage}`];
+  if (direct) return [direct];
+  if (sourceLanguage === "en" || targetLanguage === "en") return [];
+  const toEnglish = modelForPair[`${sourceLanguage}-en`];
+  const fromEnglish = modelForPair[`en-${targetLanguage}`];
+  return toEnglish && fromEnglish ? [toEnglish, fromEnglish] : [];
+}
+
+/** Downloads and browser-caches the direct model or two English-pivot models for an offline pair. */
+export async function downloadTranslationModels(sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
+  const models = getTranslationModelPlan(sourceLanguage, targetLanguage);
+  if (!models.length) throw new Error("This language pair does not have an on-device model.");
+  const { env, pipeline } = await import("@huggingface/transformers");
+  env.useBrowserCache = true;
+  env.cacheKey = "sajilostay-translation-models";
+  for (const model of models) {
+    const translator = await pipeline("translation", model, { dtype: "q8" });
+    await translator.dispose?.();
+  }
+  return models.length;
+}
+
 /** Uses the already-supported English model pairs for direct Nepali/Hindi/Bengali translation. */
 async function translateWithEnglishPivot(text: string, sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
   if (sourceLanguage === "en" || targetLanguage === "en") return null;
