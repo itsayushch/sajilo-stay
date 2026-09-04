@@ -1,6 +1,6 @@
 {
-  "name": "SajiloStay",
-  "short_name": "SajiloStay",
+  "name": "Sajilo Stay",
+  "short_name": "Sajilo Stay",
   "description": "Offline homestay helper for Darjeeling garden villages.",
   "start_url": "/",
   "display": "standalone",

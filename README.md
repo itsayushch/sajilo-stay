@@ -1,6 +1,6 @@
-# SajiloStay
+# Sajilo Stay
 
-SajiloStay is an offline-first Progressive Web App for first-time homestay hosts in Darjeeling tea-garden villages. It helps a family prepare a listing, communicate with guests, record bookings and cash, and work through a hosting-readiness checklist on a low-end phone.
+Sajilo Stay is an offline-first Progressive Web App for first-time homestay hosts in Darjeeling tea-garden villages. It helps a family prepare a listing, communicate with guests, record bookings and cash, and work through a hosting-readiness checklist on a low-end phone.
 
 ## What works offline
 
@@ -12,7 +12,7 @@ After the app shell has been loaded once, a host can complete the core flow with
 4. Add bookings, mark them paid or pending, view totals, and export a CSV ledger.
 5. Complete the hosting-readiness checklist.
 
-All host data lives in IndexedDB on that device. SajiloStay does not need an account or cloud database for its core flow.
+All host data lives in IndexedDB on that device. Sajilo Stay does not need an account or cloud database for its core flow.
 
 ## AI behavior and fallbacks
 
@@ -54,7 +54,7 @@ Do this on the phone intended for the demo:
 
 1. Open the deployed app once online and wait for its first load to finish.
 2. Add a profile, a sample booking, a listing, and one guest-chat message. Refresh once so persistence and the service worker can settle.
-3. Turn on airplane mode and fully close Chrome. Reopen SajiloStay from the home screen or Chrome.
+3. Turn on airplane mode and fully close Chrome. Reopen Sajilo Stay from the home screen or Chrome.
 4. Confirm the saved profile, booking, ledger total, listing, chat history, and checklist are present.
 5. In Settings, turn on **Force offline mode**. Translate `is the room available?` and generate a listing from short notes. Both must show an offline/on-device source and complete without a network request.
 6. Add another pending booking, mark it paid, and export the CSV. Confirm each change survives a refresh while still in airplane mode.
@@ -63,7 +63,7 @@ Record this same sequence for the two-minute demo with the phone's airplane-mode
 
 ## Deploy and verify installation
 
-SajiloStay uses a Next.js API route only for the optional Groq tier, so deploy it to **Vercel** rather than static-only hosting.
+Sajilo Stay uses a Next.js API route only for the optional Groq tier, so deploy it to **Vercel** rather than static-only hosting.
 
 1. Push this repository to a Git provider and import it into Vercel.
 2. Set the optional `GROQ_API_KEY` environment variable in Vercel. Omit it if you want a strictly offline/on-device deployment; every core feature still works.

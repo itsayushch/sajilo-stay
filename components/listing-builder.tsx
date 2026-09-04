@@ -80,7 +80,7 @@ export function ListingBuilder() {
       return;
     }
     try {
-      await navigator.share({ title: "SajiloStay homestay", text: `${copy}\n\nFrom ${formatPrice(price.min)} per night.` });
+      await navigator.share({ title: "Sajilo Stay homestay", text: `${copy}\n\nFrom ${formatPrice(price.min)} per night.` });
       setStatus("Listing ready to share.");
     } catch {
       setStatus("Sharing was cancelled. Your accepted listing is still saved offline.");

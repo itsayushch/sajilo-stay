@@ -22,14 +22,14 @@ export function Dashboard() {
     return () => window.clearTimeout(storageTimeout);
   }, []);
 
-  if (profile === undefined) return <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6"><p className="text-base font-semibold text-[#1f5d3b]">Preparing SajiloStay…</p></main>;
+  if (profile === undefined) return <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6"><p className="text-base font-semibold text-[#1f5d3b]">Preparing Sajilo Stay…</p></main>;
   if (!profile) return <Onboarding onComplete={setProfile} />;
 
   return (
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
       <header className="mb-7 flex items-start justify-between gap-4">
         <div>
-          <p className="mb-2 text-sm font-bold text-[#1f5d3b]">SajiloStay · your hosting book</p>
+          <p className="mb-2 text-sm font-bold text-[#1f5d3b]">Sajilo Stay · your hosting book</p>
           <h1 className="text-4xl font-bold leading-tight">Namaste, {profile.homeName}.</h1>
           <p className="muted-copy mt-2 text-base leading-6">A quiet helper for your garden-village home.</p>
         </div>

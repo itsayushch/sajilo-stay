@@ -3,7 +3,7 @@ import { ServiceWorkerRegistration } from "@/components/service-worker-registrat
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SajiloStay",
+  title: "Sajilo Stay",
   description: "An offline homestay helper for Darjeeling garden villages.",
   manifest: "/manifest.webmanifest",
 };
