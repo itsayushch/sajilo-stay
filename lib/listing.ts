@@ -1,4 +1,5 @@
 import type { Listing } from "@/lib/db";
+import type { ModelDownloadProgress } from "@/lib/translate";
 
 export type ListingTier = "online-ai" | "on-device-ai" | "offline-basic";
 
@@ -21,19 +22,26 @@ const chromeLanguageModel = globalThis as typeof globalThis & { LanguageModel?: 
 // It is intentionally remote rather than bundled so the installed app stays small.
 const localListingModel = "onnx-community/SmolLM2-135M-Instruct-ONNX";
 
-async function loadLocalListingGenerator() {
+async function loadLocalListingGenerator(onProgress?: (update: ModelDownloadProgress) => void) {
   const { env, pipeline } = await import("@huggingface/transformers");
   env.useBrowserCache = true;
   env.cacheKey = "sajilostay-listing-model";
-  return pipeline("text-generation", localListingModel, { dtype: "q4f16" });
+  return pipeline("text-generation", localListingModel, {
+    dtype: "q4f16",
+    progress_callback: (update) => {
+      if (update.status !== "progress" && update.status !== "progress_total") return;
+      onProgress?.({ progress: Math.round(update.progress), file: "file" in update ? update.file : undefined });
+    },
+  });
 }
 
 let localListingGenerator: Promise<Awaited<ReturnType<typeof loadLocalListingGenerator>>> | null = null;
 
 /** Downloads and browser-caches the local listing writer without generating a listing. */
-export async function downloadListingModel() {
-  localListingGenerator ??= loadLocalListingGenerator();
+export async function downloadListingModel(onProgress?: (update: ModelDownloadProgress) => void) {
+  localListingGenerator ??= loadLocalListingGenerator(onProgress);
   await localListingGenerator;
+  onProgress?.({ progress: 100 });
 }
 
 function contains(notes: string, terms: string[]) {

@@ -14,6 +14,11 @@ export interface TranslationResult {
   note?: string;
 }
 
+export interface ModelDownloadProgress {
+  progress: number;
+  file?: string;
+}
+
 type BrowserTranslator = {
   translate(text: string): Promise<string>;
 };
@@ -106,16 +111,23 @@ export function getTranslationModelPlan(sourceLanguage: LanguageCode, targetLang
 }
 
 /** Downloads and browser-caches the direct model or two English-pivot models for an offline pair. */
-export async function downloadTranslationModels(sourceLanguage: LanguageCode, targetLanguage: LanguageCode) {
+export async function downloadTranslationModels(sourceLanguage: LanguageCode, targetLanguage: LanguageCode, onProgress?: (update: ModelDownloadProgress) => void) {
   const models = getTranslationModelPlan(sourceLanguage, targetLanguage);
   if (!models.length) throw new Error("This language pair does not have an on-device model.");
   const { env, pipeline } = await import("@huggingface/transformers");
   env.useBrowserCache = true;
   env.cacheKey = "sajilostay-translation-models";
-  for (const model of models) {
-    const translator = await pipeline("translation", model, { dtype: "q8" });
+  for (const [index, model] of models.entries()) {
+    const translator = await pipeline("translation", model, {
+      dtype: "q8",
+      progress_callback: (update) => {
+        if (update.status !== "progress" && update.status !== "progress_total") return;
+        onProgress?.({ progress: Math.round(((index + update.progress / 100) / models.length) * 100), file: "file" in update ? update.file : undefined });
+      },
+    });
     await translator.dispose?.();
   }
+  onProgress?.({ progress: 100 });
   return models.length;
 }
 
