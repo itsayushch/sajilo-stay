@@ -6,11 +6,12 @@ type AiRequest =
 
 /** Requests the optional server tier. Any failure intentionally returns null for local fallbacks. */
 export async function requestOnlineAi(request: AiRequest) {
-  if (typeof window === "undefined" || !navigator.onLine) return null;
+  if (typeof window === "undefined") return null;
   try {
     if (await getForceOfflineMode()) return null;
-  } catch {
-    return null;
+  } catch (error) {
+    // Storage availability should not prevent an otherwise reachable online tier.
+    console.warn("Sajilo Stay could not read the offline preference; attempting online AI.", error);
   }
 
   const controller = new AbortController();
@@ -22,12 +23,16 @@ export async function requestOnlineAi(request: AiRequest) {
       body: JSON.stringify(request),
       signal: controller.signal,
     });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.warn(`Sajilo Stay online AI request failed with HTTP ${response.status}; using a local fallback.`);
+      return null;
+    }
     const data: unknown = await response.json();
     if (!data || typeof data !== "object") return null;
     const value = request.action === "translate" ? (data as { translation?: unknown }).translation : (data as { copy?: unknown }).copy;
     return typeof value === "string" && value.trim() ? value.trim() : null;
-  } catch {
+  } catch (error) {
+    console.warn("Sajilo Stay online AI request failed; using a local fallback.", error);
     return null;
   } finally {
     window.clearTimeout(timeout);
