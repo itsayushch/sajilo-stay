@@ -25,9 +25,13 @@ const localListingModel = "onnx-community/SmolLM2-135M-Instruct-ONNX";
 async function loadLocalListingGenerator(onProgress?: (update: ModelDownloadProgress) => void) {
   const { env, pipeline } = await import("@huggingface/transformers");
   env.useBrowserCache = true;
-  env.cacheKey = "sajilostay-listing-model";
+  // Keep this cache separate from the older q4f16 model, which is not reliable
+  // in ONNX Runtime Web on some phones.
+  env.cacheKey = "sajilostay-listing-model-v2";
   return pipeline("text-generation", localListingModel, {
-    dtype: "q4f16",
+    // q4 is the standard WASM-friendly quantization. q4f16 can load a graph
+    // with unsupported precision-cast nodes in some mobile browsers.
+    dtype: "q4",
     progress_callback: (update) => {
       if (update.status === "progress_total") {
         onProgress?.({ progress: Math.round(update.progress) });
@@ -43,7 +47,13 @@ let localListingGenerator: Promise<Awaited<ReturnType<typeof loadLocalListingGen
 /** Downloads and browser-caches the local listing writer without generating a listing. */
 export async function downloadListingModel(onProgress?: (update: ModelDownloadProgress) => void) {
   localListingGenerator ??= loadLocalListingGenerator(onProgress);
-  await localListingGenerator;
+  try {
+    await localListingGenerator;
+  } catch (error) {
+    // Do not retain a rejected promise: the user must be able to retry.
+    localListingGenerator = null;
+    throw error;
+  }
   onProgress?.({ progress: 100 });
 }
 

@@ -40,8 +40,7 @@ export function OfflineAiDownload({ onContinue }: { preferredLanguage: LanguageC
       setStatus("Lite offline AI is ready. Listing writing can now work without data.");
     } catch (error) {
       console.error("Sajilo Stay could not download offline AI models.", error);
-      const detail = error instanceof Error && error.message ? ` ${error.message}` : "";
-      setStatus(`Could not finish the download.${detail} Check your connection and free browser storage, then try again.`);
+      setStatus("Could not finish the Lite AI download. Check your connection and free browser storage, then try again. Technical details were saved to the browser console.");
     } finally {
       setIsDownloading(false);
     }
