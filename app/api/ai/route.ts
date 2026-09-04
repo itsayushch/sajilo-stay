@@ -5,7 +5,8 @@ const maxInputLength = 2_000;
 
 type AiRequest =
   | { action: "translate"; text: string; sourceLang: string; targetLang: string }
-  | { action: "generateListing"; notes: string };
+  | { action: "generateListing"; notes: string }
+  | { action: "generateRoomDescription"; name: string; capacity: number; notes: string };
 
 function isRequest(value: unknown): value is AiRequest {
   if (!value || typeof value !== "object" || !("action" in value)) return false;
@@ -13,7 +14,8 @@ function isRequest(value: unknown): value is AiRequest {
   if (candidate.action === "translate") {
     return typeof candidate.text === "string" && candidate.text.trim().length > 0 && candidate.text.length <= maxInputLength && typeof candidate.sourceLang === "string" && typeof candidate.targetLang === "string" && supportedLanguages.has(candidate.sourceLang) && supportedLanguages.has(candidate.targetLang);
   }
-  return candidate.action === "generateListing" && typeof candidate.notes === "string" && candidate.notes.trim().length > 0 && candidate.notes.trim().length <= maxInputLength;
+  if (candidate.action === "generateListing") return typeof candidate.notes === "string" && candidate.notes.trim().length > 0 && candidate.notes.trim().length <= maxInputLength;
+  return candidate.action === "generateRoomDescription" && typeof candidate.name === "string" && candidate.name.trim().length > 0 && typeof candidate.capacity === "number" && candidate.capacity > 0 && typeof candidate.notes === "string" && candidate.notes.trim().length > 0 && candidate.notes.trim().length <= maxInputLength;
 }
 
 async function askGroq(system: string, user: string) {
@@ -52,6 +54,14 @@ export async function POST(request: Request) {
       );
       if (!translation) return NextResponse.json({ error: "Online AI is unavailable." }, { status: 500 });
       return NextResponse.json({ translation });
+    }
+    if (body.action === "generateRoomDescription") {
+      const description = await askGroq(
+        "Write a concise, warm, factual guest-facing room description in plain English. Turn notes into a complete paragraph; never repeat or label the notes. Do not invent facilities. Return only the description.",
+        `Room name: ${body.name}\nCapacity: up to ${body.capacity} guest${body.capacity === 1 ? "" : "s"}\nRoom notes:\n${body.notes}`,
+      );
+      if (!description) return NextResponse.json({ error: "Online AI is unavailable." }, { status: 500 });
+      return NextResponse.json({ description });
     }
     const copy = await askGroq(
       "Write a warm, factual 70-word homestay listing in plain English. Turn the host notes into a complete guest-facing paragraph; do not quote, repeat, or label the notes. Do not invent facilities, prices, or locations. Return only the listing copy.",

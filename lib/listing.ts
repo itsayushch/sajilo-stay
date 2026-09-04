@@ -155,6 +155,31 @@ async function generateWithLocalModel(notes: string, price: PriceBand) {
   return copy && copy.length >= 40 ? copy : null;
 }
 
+function roomTemplate(name: string, capacity: number, notes: string) {
+  const guestLabel = capacity === 1 ? "one guest" : `up to ${capacity} guests`;
+  return `${name} is a comfortable space for ${guestLabel}. ${notes.trim().replace(/\s+/g, " ")} Please ask us if you would like any additional details before your stay.`;
+}
+
+export async function generateRoomDescription(name: string, capacity: number, notes: string): Promise<{ copy: string; tier: ListingTier }> {
+  const { requestOnlineAi } = await import("@/lib/online-ai");
+  const onlineCopy = await requestOnlineAi({ action: "generateRoomDescription", name, capacity, notes });
+  const validOnlineCopy = cleanGeneratedListing(onlineCopy, notes);
+  if (validOnlineCopy) return { copy: validOnlineCopy, tier: "online-ai" };
+  try {
+    const copy = await generateWithPromptApi(`Room name: ${name}. Sleeps ${capacity}. ${notes}`, { min: 0, max: 0, rooms: 1, amenities: [] });
+    const validCopy = cleanGeneratedListing(copy, notes);
+    if (validCopy) return { copy: validCopy, tier: "on-device-ai" };
+  } catch { /* use the downloaded local model or fallback */ }
+  try {
+    localListingGenerator ??= loadLocalListingGenerator();
+    const generator = await localListingGenerator;
+    const output = await generator([{ role: "system", content: "Write concise, warm and factual guest-facing room descriptions. Never echo notes or invent facilities. Return only one finished paragraph." }, { role: "user", content: `Describe ${name}, for up to ${capacity} guests, using these notes: ${notes}` }], { max_new_tokens: 100, do_sample: false });
+    const validCopy = cleanGeneratedListing(extractGeneratedText(output), notes);
+    if (validCopy) return { copy: validCopy, tier: "on-device-ai" };
+  } catch (error) { console.warn("Sajilo Stay could not write a room description locally.", error); }
+  return { copy: roomTemplate(name, capacity, notes), tier: "offline-basic" };
+}
+
 export async function generateListingCopy(notes: string): Promise<{ copy: string; tier: ListingTier; price: PriceBand }> {
   const price = suggestPrice(notes);
   const { requestOnlineAi } = await import("@/lib/online-ai");

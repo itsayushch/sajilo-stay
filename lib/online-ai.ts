@@ -1,6 +1,7 @@
 type AiRequest =
   | { action: "translate"; text: string; sourceLang: string; targetLang: string }
-  | { action: "generateListing"; notes: string };
+  | { action: "generateListing"; notes: string }
+  | { action: "generateRoomDescription"; name: string; capacity: number; notes: string };
 
 /** Requests the optional server tier. Any failure intentionally returns null for local fallbacks. */
 export async function requestOnlineAi(request: AiRequest) {
@@ -20,7 +21,7 @@ export async function requestOnlineAi(request: AiRequest) {
     }
     const data: unknown = await response.json();
     if (!data || typeof data !== "object") return null;
-    const value = request.action === "translate" ? (data as { translation?: unknown }).translation : (data as { copy?: unknown }).copy;
+    const value = request.action === "translate" ? (data as { translation?: unknown }).translation : request.action === "generateListing" ? (data as { copy?: unknown }).copy : (data as { description?: unknown }).description;
     return typeof value === "string" && value.trim() ? value.trim() : null;
   } catch (error) {
     console.warn("Sajilo Stay online AI request failed; using a local fallback.", error);

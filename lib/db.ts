@@ -51,6 +51,8 @@ export interface Room {
   name: string;
   capacity: number;
   status: RoomStatus;
+  notes?: string;
+  description?: string;
 }
 
 export interface SajiloStayDB extends DBSchema {
