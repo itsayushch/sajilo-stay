@@ -67,6 +67,11 @@ export interface SajiloStayDB extends DBSchema {
     key: string;
     value: ChecklistState;
   };
+  // Legacy store retained in the type only so version 4 can delete it safely.
+  app_settings: {
+    key: string;
+    value: { name: string; value: boolean };
+  };
 }
 
 let databasePromise: Promise<IDBPDatabase<SajiloStayDB>> | undefined;
