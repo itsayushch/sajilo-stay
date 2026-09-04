@@ -3,7 +3,7 @@ import Link from "next/link";
 export function PlaceholderScreen({ title, description }: { title: string; description: string }) {
   return (
     <main className="mx-auto min-h-screen max-w-lg px-4 py-6">
-      <Link href="/" className="text-sm font-bold text-[#1f5d3b]">← Home</Link>
+      <Link href="/" className="home-link inline-flex min-h-11 items-center text-sm font-bold">← Back</Link>
       <section className="mt-8 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
         <h1 className="text-3xl font-bold">{title}</h1>
         <p className="mt-3 text-base leading-6 text-slate-700">{description}</p>

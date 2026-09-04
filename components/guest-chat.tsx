@@ -82,7 +82,7 @@ export function GuestChat() {
 
   return (
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
-      <Link href="/" className="home-link text-sm font-bold">Home</Link>
+      <Link href="/" className="home-link inline-flex min-h-11 items-center text-sm font-bold">← Back</Link>
       <header className="mt-6"><p className="text-sm font-bold text-[#1f5d3b]">Words for welcoming guests</p><h1 className="mt-1 text-4xl font-bold">Guest chat</h1><p className="muted-copy mt-2 text-base leading-6">Translate practical guest messages, with an offline fallback.</p></header>
 
       <form onSubmit={submitTranslation} className="paper-panel mt-6 p-4">

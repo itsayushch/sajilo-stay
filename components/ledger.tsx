@@ -124,7 +124,7 @@ export function Ledger() {
 
   return (
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
-      <Link href="/" className="home-link text-sm font-bold">Home</Link>
+      <Link href="/" className="home-link inline-flex min-h-11 items-center text-sm font-bold">← Back</Link>
       <header className="mt-6">
         <p className="text-sm font-bold text-[#1f5d3b]">Your hosting register</p>
         <h1 className="mt-1 text-4xl font-bold">Bookings & cash</h1>
