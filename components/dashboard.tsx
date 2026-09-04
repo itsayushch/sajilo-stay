@@ -19,7 +19,7 @@ export function Dashboard() {
 
   return (
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6">
-      <header className="mb-7 flex items-start justify-between gap-4">
+      <header className="mb-7 flex items-start justify-between gap-4 pr-24">
         <div>
           <p className="mb-2 text-sm font-bold text-[#1f5d3b]">Sajilo Stay · your hosting book</p>
           <h1 className="text-4xl font-bold leading-tight">Namaste, {profile.homeName}.</h1>
