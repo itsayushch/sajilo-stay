@@ -42,8 +42,8 @@ export function GuestChat() {
 
   function useQuickPhrase(phrase: string) {
     setText(phrase);
-    setSourceLanguage("en");
-    if (targetLanguage === "en") setTargetLanguage("ne");
+    setSourceLanguage("ne");
+    if (targetLanguage === "ne") setTargetLanguage("en");
   }
 
   function useTemplate(value: string) {

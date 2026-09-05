@@ -59,10 +59,10 @@ const phrasebook: Record<string, Partial<Record<LanguageCode, string>>> = {
 };
 
 export const offlinePhrasePacks = [
-  { id: "booking", label: "Booking & payment", phrases: ["is the room available?", "would you like to book this room?", "please send your check-in and check-out dates.", "a deposit is needed to confirm the booking.", "payment can be made by cash or upi.", "your booking is confirmed."] },
-  { id: "arrival", label: "Arrival & directions", phrases: ["how do i get there?", "please arrive before 8 pm.", "please call us when you reach the village.", "we can help arrange a taxi.", "the nearest market is nearby.", "there is mobile network here."] },
-  { id: "stay", label: "During the stay", phrases: ["do you serve food?", "breakfast and dinner are available.", "hot water is available in the morning and evening.", "wifi is available in common areas.", "please tell us if you have any food allergies.", "please let us know if you need anything."] },
-  { id: "rules", label: "House rules", phrases: ["what are the house rules?", "please remove shoes inside.", "please keep noise low after 9 pm.", "smoking is not allowed inside."] },
+  { id: "booking", label: "बुकिङ र भुक्तानी", phrases: ["कोठा उपलब्ध छ?", "के तपाईं यो कोठा बुक गर्न चाहनुहुन्छ?", "कृपया आफ्नो चेक-इन र चेक-आउट मिति पठाउनुहोस्।", "बुकिङ पुष्टि गर्न अग्रिम रकम आवश्यक छ।", "भुक्तानी नगद वा यूपीआईबाट गर्न सकिन्छ।", "तपाईंको बुकिङ पुष्टि भयो।"] },
+  { id: "arrival", label: "आगमन र बाटो", phrases: ["म त्यहाँ कसरी पुग्न सक्छु?", "कृपया बेलुका ८ बजेअघि आइपुग्नुहोस्।", "गाउँ पुग्नुभयो भने कृपया हामीलाई फोन गर्नुहोस्।", "हामी ट्याक्सी मिलाउन मद्दत गर्न सक्छौं।", "नजिकै बजार छ।", "यहाँ मोबाइल नेटवर्क छ।"] },
+  { id: "stay", label: "बसाइँका बेला", phrases: ["खाना उपलब्ध छ?", "बिहानको खाजा र बेलुकाको खाना उपलब्ध छ।", "बिहान र बेलुका तातो पानी उपलब्ध छ।", "साझा ठाउँमा वाइफाइ उपलब्ध छ।", "कुनै खानेकुराको एलर्जी छ भने कृपया हामीलाई भन्नुहोस्।", "कुनै कुरा चाहिएको छ भने कृपया हामीलाई भन्नुहोस्।"] },
+  { id: "rules", label: "घरका नियम", phrases: ["घरका नियमहरू के हुन्?", "कृपया भित्र जुत्ता खोल्नुहोस्।", "कृपया राति ९ बजेपछि आवाज कम राख्नुहोस्।", "भित्र धुम्रपान गर्न अनुमति छैन।"] },
 ] as const;
 
 function normalize(text: string) {
@@ -77,10 +77,22 @@ function translateFromPhrasebook(text: string, targetLanguage: LanguageCode): Tr
     const templates: Partial<Record<LanguageCode, string>> = { ne: `मूल्य प्रति रात रु ${amount} हो।`, hi: `कीमत ₹${amount} प्रति रात है।`, bn: `প্রতি রাতের ভাড়া ₹${amount}।` };
     if (templates[targetLanguage]) return { text: templates[targetLanguage]!, tier: "offline-basic" };
   }
+  const nepaliPriceMatch = text.trim().match(/^मूल्य प्रति रात रु\s*([\d,]+)\s*हो।?$/);
+  if (nepaliPriceMatch) {
+    const amount = nepaliPriceMatch[1];
+    const templates: Partial<Record<LanguageCode, string>> = { en: `The price is ₹${amount} per night.`, hi: `कीमत ₹${amount} प्रति रात है।`, bn: `প্রতি রাতের ভাড়া ₹${amount}।` };
+    if (templates[targetLanguage]) return { text: templates[targetLanguage]!, tier: "offline-basic" };
+  }
   const dateMatch = text.trim().match(/^please arrive on\s+(.+?)\.?$/i);
   if (dateMatch) {
     const date = dateMatch[1];
     const templates: Partial<Record<LanguageCode, string>> = { ne: `कृपया ${date} मा आइपुग्नुहोस्।`, hi: `कृपया ${date} को पहुँचें।`, bn: `অনুগ্রহ করে ${date}-এ পৌঁছান।` };
+    if (templates[targetLanguage]) return { text: templates[targetLanguage]!, tier: "offline-basic" };
+  }
+  const nepaliDateMatch = text.trim().match(/^कृपया\s+(.+?)\s+मा आइपुग्नुहोस्।?$/);
+  if (nepaliDateMatch) {
+    const date = nepaliDateMatch[1];
+    const templates: Partial<Record<LanguageCode, string>> = { en: `Please arrive on ${date}.`, hi: `कृपया ${date} को पहुँचें।`, bn: `অনুগ্রহ করে ${date}-এ পৌঁছান।` };
     if (templates[targetLanguage]) return { text: templates[targetLanguage]!, tier: "offline-basic" };
   }
   const direct = phrasebook[key]?.[targetLanguage];
