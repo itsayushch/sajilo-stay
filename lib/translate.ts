@@ -59,11 +59,36 @@ const phrasebook: Record<string, Partial<Record<LanguageCode, string>>> = {
 };
 
 export const offlinePhrasePacks = [
-  { id: "booking", label: "बुकिङ र भुक्तानी", phrases: ["कोठा उपलब्ध छ?", "के तपाईं यो कोठा बुक गर्न चाहनुहुन्छ?", "कृपया आफ्नो चेक-इन र चेक-आउट मिति पठाउनुहोस्।", "बुकिङ पुष्टि गर्न अग्रिम रकम आवश्यक छ।", "भुक्तानी नगद वा यूपीआईबाट गर्न सकिन्छ।", "तपाईंको बुकिङ पुष्टि भयो।"] },
-  { id: "arrival", label: "आगमन र बाटो", phrases: ["म त्यहाँ कसरी पुग्न सक्छु?", "कृपया बेलुका ८ बजेअघि आइपुग्नुहोस्।", "गाउँ पुग्नुभयो भने कृपया हामीलाई फोन गर्नुहोस्।", "हामी ट्याक्सी मिलाउन मद्दत गर्न सक्छौं।", "नजिकै बजार छ।", "यहाँ मोबाइल नेटवर्क छ।"] },
-  { id: "stay", label: "बसाइँका बेला", phrases: ["खाना उपलब्ध छ?", "बिहानको खाजा र बेलुकाको खाना उपलब्ध छ।", "बिहान र बेलुका तातो पानी उपलब्ध छ।", "साझा ठाउँमा वाइफाइ उपलब्ध छ।", "कुनै खानेकुराको एलर्जी छ भने कृपया हामीलाई भन्नुहोस्।", "कुनै कुरा चाहिएको छ भने कृपया हामीलाई भन्नुहोस्।"] },
-  { id: "rules", label: "घरका नियम", phrases: ["घरका नियमहरू के हुन्?", "कृपया भित्र जुत्ता खोल्नुहोस्।", "कृपया राति ९ बजेपछि आवाज कम राख्नुहोस्।", "भित्र धुम्रपान गर्न अनुमति छैन।"] },
+  { id: "booking", label: "बुकिङ र भुक्तानी (Booking ra bhuktani)", phrases: ["कोठा उपलब्ध छ?", "के तपाईं यो कोठा बुक गर्न चाहनुहुन्छ?", "कृपया आफ्नो चेक-इन र चेक-आउट मिति पठाउनुहोस्।", "बुकिङ पुष्टि गर्न अग्रिम रकम आवश्यक छ।", "भुक्तानी नगद वा यूपीआईबाट गर्न सकिन्छ।", "तपाईंको बुकिङ पुष्टि भयो।"] },
+  { id: "arrival", label: "आगमन र बाटो (Aagaman ra bato)", phrases: ["म त्यहाँ कसरी पुग्न सक्छु?", "कृपया बेलुका ८ बजेअघि आइपुग्नुहोस्।", "गाउँ पुग्नुभयो भने कृपया हामीलाई फोन गर्नुहोस्।", "हामी ट्याक्सी मिलाउन मद्दत गर्न सक्छौं।", "नजिकै बजार छ।", "यहाँ मोबाइल नेटवर्क छ।"] },
+  { id: "stay", label: "बसाइँका बेला (Basainka bela)", phrases: ["खाना उपलब्ध छ?", "बिहानको खाजा र बेलुकाको खाना उपलब्ध छ।", "बिहान र बेलुका तातो पानी उपलब्ध छ।", "साझा ठाउँमा वाइफाइ उपलब्ध छ।", "कुनै खानेकुराको एलर्जी छ भने कृपया हामीलाई भन्नुहोस्।", "कुनै कुरा चाहिएको छ भने कृपया हामीलाई भन्नुहोस्।"] },
+  { id: "rules", label: "घरका नियम (Ghar ka niyam)", phrases: ["घरका नियमहरू के हुन्?", "कृपया भित्र जुत्ता खोल्नुहोस्।", "कृपया राति ९ बजेपछि आवाज कम राख्नुहोस्।", "भित्र धुम्रपान गर्न अनुमति छैन।"] },
 ] as const;
+
+export const romanizedPhrases: Record<string, string> = {
+  "कोठा उपलब्ध छ?": "Kotha upalabdha chha?",
+  "के तपाईं यो कोठा बुक गर्न चाहनुहुन्छ?": "Ke tapain yo kotha book garna chahanu hunchha?",
+  "कृपया आफ्नो चेक-इन र चेक-आउट मिति पठाउनुहोस्।": "Kripaya aafno check-in ra check-out miti pathaunuhos.",
+  "बुकिङ पुष्टि गर्न अग्रिम रकम आवश्यक छ।": "Booking pushti garna agrim rakam aawashyak chha.",
+  "भुक्तानी नगद वा यूपीआईबाट गर्न सकिन्छ।": "Bhuktani nagad wa UPI bata garna sakincha.",
+  "तपाईंको बुकिङ पुष्टि भयो।": "Tapainko booking pushti bhayo.",
+  "म त्यहाँ कसरी पुग्न सक्छु?": "Ma tyahan kasari pugna sakchhu?",
+  "कृपया बेलुका ८ बजेअघि आइपुग्नुहोस्।": "Kripaya beluka 8 baje agadi aaipugnuhos.",
+  "गाउँ पुग्नुभयो भने कृपया हामीलाई फोन गर्नुहोस्।": "Gaun pugnu bhayo bhane kripaya hamilai phone garnuhos.",
+  "हामी ट्याक्सी मिलाउन मद्दत गर्न सक्छौं।": "Hami taxi milauna maddat garna sakchhau.",
+  "नजिकै बजार छ।": "Najikai bazar chha.",
+  "यहाँ मोबाइल नेटवर्क छ।": "Yahan mobile network chha.",
+  "खाना उपलब्ध छ?": "Khana upalabdha chha?",
+  "बिहानको खाजा र बेलुकाको खाना उपलब्ध छ।": "Bihanko khaja ra belukako khana upalabdha chha.",
+  "बिहान र बेलुका तातो पानी उपलब्ध छ।": "Bihan ra beluka tato pani upalabdha chha.",
+  "साझा ठाउँमा वाइफाइ उपलब्ध छ।": "Sajha thau ma Wi-Fi upalabdha chha.",
+  "कुनै खानेकुराको एलर्जी छ भने कृपया हामीलाई भन्नुहोस्।": "Kunai khanekurako allergy chha bhane kripaya hamilai bhannuhos.",
+  "कुनै कुरा चाहिएको छ भने कृपया हामीलाई भन्नुहोस्।": "Kunai kura chahiyeko chha bhane kripaya hamilai bhannuhos.",
+  "घरका नियमहरू के हुन्?": "Gharka niyamharu ke hun?",
+  "कृपया भित्र जुत्ता खोल्नुहोस्।": "Kripaya bhitra jutta kholnuhos.",
+  "कृपया राति ९ बजेपछि आवाज कम राख्नुहोस्।": "Kripaya rati 9 baje pachi aawaj kam rakhnuhos.",
+  "भित्र धुम्रपान गर्न अनुमति छैन।": "Bhitra dhumrapan garna anumati chaina.",
+};
 
 function normalize(text: string) {
   return text.trim().toLocaleLowerCase();
