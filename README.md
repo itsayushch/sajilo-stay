@@ -69,6 +69,34 @@ Sajilo Stay does not force guests to install another chat app. The host continue
 - Romanized reading help for Nepali phrases
 - Saved translations stay on the device
 
+## Deliberately small, mobile-first design
+
+Sajilo Stay is intentionally **not a desktop-style property-management dashboard squeezed onto a phone**. Its primary user may have a low-end Android phone, one hand free while hosting, limited screen space, and bright outdoor conditions.
+
+Instead of adding desktop sidebars, dense tables, or a different desktop workflow, the product uses one calm, single-column flow with large, readable actions. It is responsive in the practical sense—controls reflow safely for small and larger screens—but the information architecture stays mobile-first everywhere. A judge opening it on desktop sees the same focused phone workflow, rather than a feature-heavy admin panel that would make the real target device harder to use.
+
+Design choices include:
+
+- A compact `max-w-lg` reading width so forms and actions remain reachable
+- Large touch targets, visible focus states, clear input boundaries, and high-contrast controls
+- One primary action at a time instead of crowded toolbars
+- No image-heavy hero sections, maps, charts, or decorative animation
+- English / नेपाली controls and local-language phrases placed close to the task where they matter
+
+## Keeping the app lightweight
+
+The offline requirement does not mean shipping a huge app up front. We keep the initial experience small by design:
+
+- Tailwind CSS and hand-built React components instead of a large UI component library
+- Local Manrope font and simple CSS shapes instead of image assets
+- IndexedDB for device storage; no authentication SDK, analytics SDK, cloud database client, or real-time chat service
+- Phrase packs and rule-based templates for reliable offline tasks instead of bundling a multi-gigabyte translation model
+- The Lite listing model is **optional and downloaded on demand** only when a host chooses it; it is not part of the initial application bundle
+- Dynamic imports defer AI runtime code until an AI feature is actually used
+- PWA caching keeps the app shell available after first load without forcing large model files into the service-worker precache
+
+This lets Sajilo Stay prioritize a fast first visit and dependable everyday offline actions, while still offering richer AI assistance on devices with enough storage and connectivity.
+
 ## Offline-first architecture
 
 ```text
