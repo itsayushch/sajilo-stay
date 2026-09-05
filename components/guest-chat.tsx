@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { Message, deleteMessage, getMessages, saveMessage } from "@/lib/db";
-import { LanguageCode, TranslationResult, languages, offlinePhrasePacks, romanizedPhrases, translate } from "@/lib/translate";
+import { LanguageCode, TranslationResult, guestMessagePacks, languages, offlinePhrasePacks, romanizedPhrases, translate } from "@/lib/translate";
 import { ConnectionStatus } from "@/components/connection-status";
 
 function createId() {
@@ -25,6 +25,8 @@ export function GuestChat() {
   const [quickPrice, setQuickPrice] = useState("");
   const [quickDate, setQuickDate] = useState("");
   const [showQuickReplies, setShowQuickReplies] = useState(false);
+  const [showGuestPresets, setShowGuestPresets] = useState(false);
+  const [activeGuestPack, setActiveGuestPack] = useState<(typeof guestMessagePacks)[number]["id"]>("booking");
   const [messageKind, setMessageKind] = useState<"host-reply" | "guest-message">("host-reply");
 
   useEffect(() => {
@@ -51,6 +53,13 @@ export function GuestChat() {
     setText(phrase);
     setSourceLanguage("ne");
     if (targetLanguage === "ne") setTargetLanguage("en");
+  }
+
+  function useGuestPreset(phrase: string) {
+    setText(phrase);
+    setSourceLanguage("en");
+    setTargetLanguage("ne");
+    setShowGuestPresets(false);
   }
 
   function useTemplate(value: string) {
@@ -166,6 +175,19 @@ export function GuestChat() {
             <div className="mt-4"><p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#17634d]">1 · Choose a topic</p><div className="mt-2 grid grid-cols-2 gap-2">{offlinePhrasePacks.map((pack) => <button key={pack.id} type="button" onClick={() => setActivePack(pack.id)} className={`min-h-10 rounded-lg px-3 text-left text-xs font-extrabold !shadow-none ${activePack === pack.id ? "!border-[#17634d] !bg-[#17634d] !text-white" : "!border-[#b8d5c8] !bg-[#e8f4ed] !text-[#17634d] hover:!bg-[#dcefe4]"}`}>{pack.label}</button>)}</div></div>
             <div className="mt-4 border-t border-[#d4e5dc] pt-4"><p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#17634d]">2 · Choose a message</p><div className="mt-2 grid gap-2">{offlinePhrasePacks.find((pack) => pack.id === activePack)?.phrases.map((phrase) => <button key={phrase} type="button" onClick={() => { useQuickPhrase(phrase); setShowQuickReplies(false); }} className="min-h-10 rounded-lg !border-[#b8d5c8] !bg-white px-3 py-2 text-left text-sm font-bold !text-[#17634d] !shadow-none hover:!border-[#76a993] hover:!bg-[#fafffc]"><span className="block">{phrase}</span><span className="mt-0.5 block text-xs font-medium text-[#5e7085]">({romanizedPhrases[phrase]})</span></button>)}</div></div>
             <div className="mt-4 grid gap-2 border-t border-[#d4e5dc] pt-3"><p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#17634d]">Or add a detail</p><div className="grid grid-cols-[1fr_auto] gap-2"><input value={quickPrice} onChange={(event) => setQuickPrice(event.target.value)} inputMode="numeric" placeholder="Nightly price, e.g. 2500" className="min-h-9 rounded-lg border-[#b8d5c8] bg-white px-2 text-xs" /><button type="button" disabled={!quickPrice.trim()} onClick={() => useTemplate(`The price is ₹${quickPrice.trim()} per night.`)} className="min-h-9 rounded-lg !border-[#b8d5c8] !bg-white px-2 text-xs font-extrabold !text-[#17634d] !shadow-none">Use price</button></div><div className="grid grid-cols-[1fr_auto] gap-2"><input value={quickDate} onChange={(event) => setQuickDate(event.target.value)} placeholder="Arrival date, e.g. 12 October" className="min-h-9 rounded-lg border-[#b8d5c8] bg-white px-2 text-xs" /><button type="button" disabled={!quickDate.trim()} onClick={() => useTemplate(`Please arrive on ${quickDate.trim()}.`)} className="min-h-9 rounded-lg !border-[#b8d5c8] !bg-white px-2 text-xs font-extrabold !text-[#17634d] !shadow-none">Use date</button></div></div>
+          </>}
+        </section>
+      )}
+
+      {messageKind === "guest-message" && (
+        <section className="order-3 mt-4 rounded-2xl border border-[#cce3db] bg-[#f4faf7] p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div><h2 className="text-base font-extrabold">Common guest messages</h2><p className="mt-1 text-xs text-[#4e7568]">English questions with saved Nepali meanings for offline use</p></div>
+            <button type="button" onClick={() => setShowGuestPresets((current) => !current)} className="min-h-9 rounded-lg !border-[#b8d5c8] !bg-white px-3 text-xs font-extrabold !text-[#17634d] !shadow-none">{showGuestPresets ? "Close" : "Browse messages"}</button>
+          </div>
+          {showGuestPresets && <>
+            <div className="mt-4"><p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#17634d]">1 · Choose a topic</p><div className="mt-2 grid grid-cols-2 gap-2">{guestMessagePacks.map((pack) => <button key={pack.id} type="button" onClick={() => setActiveGuestPack(pack.id)} className={`min-h-10 rounded-lg px-3 text-left text-xs font-extrabold !shadow-none ${activeGuestPack === pack.id ? "!border-[#17634d] !bg-[#17634d] !text-white" : "!border-[#b8d5c8] !bg-[#e8f4ed] !text-[#17634d] hover:!bg-[#dcefe4]"}`}>{pack.label}</button>)}</div></div>
+            <div className="mt-4 border-t border-[#d4e5dc] pt-4"><p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#17634d]">2 · Choose the guest’s message</p><div className="mt-2 grid gap-2">{guestMessagePacks.find((pack) => pack.id === activeGuestPack)?.phrases.map((phrase) => <button key={phrase} type="button" onClick={() => useGuestPreset(phrase)} className="min-h-10 rounded-lg !border-[#b8d5c8] !bg-white px-3 py-2 text-left text-sm font-bold !text-[#17634d] !shadow-none hover:!border-[#76a993] hover:!bg-[#fafffc]">{phrase}</button>)}</div></div>
           </>}
         </section>
       )}

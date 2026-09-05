@@ -56,6 +56,13 @@ const phrasebook: Record<string, Partial<Record<LanguageCode, string>>> = {
   "please keep noise low after 9 pm.": { ne: "कृपया राति ९ बजेपछि आवाज कम राख्नुहोस्।", hi: "कृपया रात 9 बजे के बाद आवाज कम रखें।", bn: "রাত ৯টার পরে অনুগ্রহ করে আওয়াজ কম রাখুন।" },
   "smoking is not allowed inside.": { ne: "भित्र धुम्रपान गर्न अनुमति छैन।", hi: "अंदर धूम्रपान की अनुमति नहीं है।", bn: "ভেতরে ধূমপান করা যাবে না।" },
   "please let us know if you need anything.": { ne: "कुनै कुरा चाहिएको छ भने कृपया हामीलाई भन्नुहोस्।", hi: "अगर आपको कुछ चाहिए तो कृपया हमें बताएं।", bn: "কিছু প্রয়োজন হলে অনুগ্রহ করে আমাদের জানান।" },
+  "can i book a room for tonight?": { ne: "के म आज रातिका लागि कोठा बुक गर्न सक्छु?" },
+  "what time is check-in?": { ne: "चेक-इन कति बजे हुन्छ?" },
+  "can i pay by upi?": { ne: "के म यूपीआईबाट भुक्तानी गर्न सक्छु?" },
+  "is there wifi?": { ne: "के यहाँ वाइफाइ छ?" },
+  "do you have hot water?": { ne: "के तातो पानी उपलब्ध छ?" },
+  "i have a food allergy.": { ne: "मलाई खानेकुराको एलर्जी छ।" },
+  "can you arrange a taxi?": { ne: "के तपाईं ट्याक्सी मिलाउन सक्नुहुन्छ?" },
 };
 
 export const offlinePhrasePacks = [
@@ -63,6 +70,13 @@ export const offlinePhrasePacks = [
   { id: "arrival", label: "आगमन र बाटो (Aagaman ra bato)", phrases: ["म त्यहाँ कसरी पुग्न सक्छु?", "कृपया बेलुका ८ बजेअघि आइपुग्नुहोस्।", "गाउँ पुग्नुभयो भने कृपया हामीलाई फोन गर्नुहोस्।", "हामी ट्याक्सी मिलाउन मद्दत गर्न सक्छौं।", "नजिकै बजार छ।", "यहाँ मोबाइल नेटवर्क छ।"] },
   { id: "stay", label: "बसाइँका बेला (Basainka bela)", phrases: ["खाना उपलब्ध छ?", "बिहानको खाजा र बेलुकाको खाना उपलब्ध छ।", "बिहान र बेलुका तातो पानी उपलब्ध छ।", "साझा ठाउँमा वाइफाइ उपलब्ध छ।", "कुनै खानेकुराको एलर्जी छ भने कृपया हामीलाई भन्नुहोस्।", "कुनै कुरा चाहिएको छ भने कृपया हामीलाई भन्नुहोस्।"] },
   { id: "rules", label: "घरका नियम (Ghar ka niyam)", phrases: ["घरका नियमहरू के हुन्?", "कृपया भित्र जुत्ता खोल्नुहोस्।", "कृपया राति ९ बजेपछि आवाज कम राख्नुहोस्।", "भित्र धुम्रपान गर्न अनुमति छैन।"] },
+] as const;
+
+export const guestMessagePacks = [
+  { id: "booking", label: "Booking & price", phrases: ["Is the room available?", "What is the price per night?", "Can I book a room for tonight?", "Can I pay by UPI?"] },
+  { id: "arrival", label: "Arrival & directions", phrases: ["How do I get there?", "What time is check-in?", "Can you arrange a taxi?"] },
+  { id: "stay", label: "During the stay", phrases: ["Do you serve food?", "Is there WiFi?", "Do you have hot water?", "I have a food allergy."] },
+  { id: "rules", label: "House rules", phrases: ["What are the house rules?"] },
 ] as const;
 
 export const romanizedPhrases: Record<string, string> = {
