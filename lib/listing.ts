@@ -177,7 +177,7 @@ export async function generateRoomDescription(name: string, capacity: number, no
     const validCopy = cleanGeneratedListing(copy, notes);
     if (validCopy) return { copy: validCopy, tier: "on-device-ai" };
   } catch { /* use the downloaded local model or fallback */ }
-  try {
+  if (await isListingModelDownloaded()) try {
     localListingGenerator ??= loadLocalListingGenerator();
     const generator = await localListingGenerator;
     const output = await generator([{ role: "system", content: "Write concise, warm and factual guest-facing room descriptions. Never echo notes or invent facilities. Return only one finished paragraph." }, { role: "user", content: `Describe ${name}, for up to ${capacity} guests, using these notes: ${notes}` }], { max_new_tokens: 100, do_sample: false });
@@ -200,7 +200,7 @@ export async function generateListingCopy(notes: string): Promise<{ copy: string
   } catch {
     // Gemini Nano may be absent, unsupported, or unable to download on this device.
   }
-  try {
+  if (await isListingModelDownloaded()) try {
     const copy = await generateWithLocalModel(notes, price);
     const validCopy = cleanGeneratedListing(copy, notes);
     if (validCopy) return { copy: validCopy, tier: "on-device-ai", price };
