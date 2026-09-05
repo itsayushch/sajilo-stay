@@ -153,24 +153,24 @@ pnpm start
 
 ## Optional online AI
 
-The core app works without an API key. To enable the optional online AI tier locally, add `GROQ_API_KEY` to `.env` or `.env.local`; never commit it. For deployment, configure it only in the host’s server environment.
+The core app works without an API key. To enable the optional online AI tier locally, add `GROQ_API_KEY` to `.env`
 
-## Judge demo flow
+## Core Feature Walkthrough
 
-1. Show the English / नेपाली interface switch.
-2. Add a booking and show expected/received totals.
-3. Reload to demonstrate local persistence.
-4. Translate a saved Nepali phrase to English, Hindi, or Bengali and show the **Offline basic** tier.
-5. Add a room, update availability, and show the price suggestion.
-6. After first load, enable airplane mode and show saved ledger data, rooms, checklist, and phrase packs still working.
+1. **Bilingual Interface:** The application features a seamless toggle between English and नेपाली interfaces to accommodate local hosts.
+2. **Ledger & Finances:** The system simplifies booking entries while automatically tracking and displaying expected versus received payment totals.
+3. **Local Persistence:** Data is cached locally in the browser, ensuring all records and configurations remain fully intact across page reloads.
+4. **Offline Translation (Basic Tier):** Pre-saved Nepali phrases can be translated into English, Hindi, or Bengali entirely offline using guaranteed phrase packs.
+5. **Room Management:** The interface allows for quick room additions, real-time availability updates, and automated price suggestions.
+6. **True Offline-First Architecture:** Once initially loaded, the app operates entirely without an internet connection. Ledger data, room status, checklists, and translation phrase packs remain completely functional even in airplane mode.
 
-## Honest limitations and next steps
+## Honest Limitations & Next Steps
 
-- Arbitrary free-form translation needs online AI or a browser translator; saved phrase packs are the guaranteed offline path.
-- Lite Offline AI needs a one-time download and about 180 MB of browser storage.
-- Guest messages are copy/share based and integrate with WhatsApp/SMS rather than a separate guest app.
-- Next: encrypted backup/restore, shareable booking confirmations, and broader curated phrase packs.
+- **Translation Constraints:** Arbitrary free-form translation currently requires an online AI or browser translator. The saved phrase packs serve as the guaranteed offline communication path.
+- **Storage Requirements:** The Lite Offline AI feature requires a one-time download and utilizes approximately 180 MB of browser storage.
+- **Messaging Workflow:** Guest communications utilize native device sharing (integrating directly with WhatsApp or SMS) rather than forcing guests or hosts to use a separate messaging app.
+- **Roadmap:** Upcoming features include encrypted data backup and restore capabilities, shareable digital booking confirmations, and an expanded library of curated phrase packs.
 
-## Built for a real constraint
+## Built for a Real Constraint
 
-Sajilo Stay is not a generic travel dashboard. It is a lightweight tool for a host who may have one phone, uncertain data, and a guest arriving today.
+Sajilo Stay is not a generic travel dashboard. It is a lightweight, highly resilient tool designed specifically for a local host who may be operating with a single smartphone, unreliable mobile data, and a guest arriving today.
