@@ -33,6 +33,7 @@ export interface Message {
   translatedText: string;
   translatedLang: string;
   timestamp: string;
+  kind?: "host-reply" | "guest-message";
 }
 
 export interface Listing {
