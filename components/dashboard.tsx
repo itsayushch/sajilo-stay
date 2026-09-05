@@ -23,10 +23,10 @@ export function Dashboard() {
   return (
     <main className="site-shell mx-auto min-h-screen max-w-lg px-4 py-6 sm:px-5">
       <ConnectionStatus />
-      <header className="mb-8 flex items-start justify-between gap-4 pr-24">
+      <header className="mb-8 flex items-start justify-between gap-4 pt-8">
         <div>
           <p className="mb-3 inline-flex rounded-full border border-[#b7d7e2] bg-white/80 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#15506d]">Sajilo Stay</p>
-          <h1 className="text-3xl font-extrabold leading-tight text-[#162338]">{language === "ne" ? "नमस्ते" : "Namaste"}, {profile.homeName}.</h1>
+          <h1 className="text-md font-extrabold leading-tight text-[#162338]">{language === "ne" ? "नमस्ते" : "Namaste"}, {profile.homeName}.</h1>
           <p className="muted-copy mt-2 max-w-sm text-sm leading-6">{t("Your calm, private workspace for every guest stay.")}</p>
         </div>
         <Link href="/settings" className="mt-1 shrink-0 rounded-lg border border-[#c7dce3] bg-white/85 px-2.5 py-2 text-xs font-extrabold text-[#15506d] shadow-sm hover:border-[#15506d] hover:bg-white focus-visible:ring-2 focus-visible:ring-[#15506d]">{t("Settings")}</Link>

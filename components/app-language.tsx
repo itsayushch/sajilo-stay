@@ -61,7 +61,7 @@ export function useAppLanguage() { const value = useContext(LanguageContext); if
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useAppLanguage();
-  return <div className="fixed right-4 top-14 z-50 rounded-full border-2 border-[#15506d] bg-white p-1 shadow-[0_10px_24px_rgba(15,73,98,0.2)]">
+  return <div className="fixed bottom-4 right-4 z-50 rounded-full border border-[#b9d4de] bg-white p-1 shadow-[0_8px_20px_rgba(15,73,98,0.16)]">
     <div className="flex items-center gap-1" aria-label="App language">
       <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d8edf4] text-base font-extrabold text-[#103e55]">अ</span>
       <button type="button" aria-pressed={language === "en"} onClick={() => setLanguage("en")} className={`min-h-9 rounded-full px-3.5 text-sm font-black transition-colors ${language === "en" ? "bg-[#103e55] text-white shadow-sm" : "bg-white text-[#103e55] hover:bg-[#d8edf4]"}`}>English</button>
