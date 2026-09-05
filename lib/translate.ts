@@ -136,10 +136,11 @@ function translateFromPhrasebook(text: string, targetLanguage: LanguageCode): Tr
   }
   const direct = phrasebook[key]?.[targetLanguage];
   if (direct) return { text: direct, tier: "offline-basic" };
+  if (targetLanguage === "en" && phrasebook[key]) return { text: key, tier: "offline-basic" };
 
-  for (const translations of Object.values(phrasebook)) {
+  for (const [englishPhrase, translations] of Object.entries(phrasebook)) {
     if (Object.values(translations).some((translation) => normalize(translation ?? "") === key)) {
-      const translated = translations[targetLanguage];
+      const translated = targetLanguage === "en" ? englishPhrase : translations[targetLanguage];
       if (translated) return { text: translated, tier: "offline-basic" };
     }
   }
