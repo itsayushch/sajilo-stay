@@ -125,6 +125,27 @@ We do not make the product dependent on a model. Every result identifies its sou
 
 General multilingual models can exceed practical browser storage on low-end phones. Sajilo Stay keeps the initial app light and makes common host phrases dependable offline. Free-form translation improves whenever data is available.
 
+## Core Feature Walkthrough
+
+1. **Bilingual Interface:** The application features a seamless toggle between English and नेपाली interfaces to accommodate local hosts.
+2. **Ledger & Finances:** The system simplifies booking entries while automatically tracking and displaying expected versus received payment totals.
+3. **Local Persistence:** Data is cached locally in the browser, ensuring all records and configurations remain fully intact across page reloads.
+4. **Offline Translation (Basic Tier):** Pre-saved Nepali phrases can be translated into English, Hindi, or Bengali entirely offline using guaranteed phrase packs.
+5. **Room Management:** The interface allows for quick room additions, real-time availability updates, and automated price suggestions.
+6. **True Offline-First Architecture:** Once initially loaded, the app operates entirely without an internet connection. Ledger data, room status, checklists, and translation phrase packs remain completely functional even in airplane mode.
+
+## Honest Limitations & Next Steps
+
+- **Translation Constraints:** Arbitrary free-form translation currently requires an online AI or browser translator. The saved phrase packs serve as the guaranteed offline communication path.
+- **Storage Requirements:** The Lite Offline AI feature requires a one-time download and utilizes approximately 180 MB of browser storage.
+- **Messaging Workflow:** Guest communications utilize native device sharing (integrating directly with WhatsApp or SMS) rather than forcing guests or hosts to use a separate messaging app.
+- **Roadmap:** Upcoming features include encrypted data backup and restore capabilities, shareable digital booking confirmations, and an expanded library of curated phrase packs.
+
+## Built for a Real Constraint
+
+Sajilo Stay is not a generic travel dashboard. It is a lightweight, highly resilient tool designed specifically for a local host who may be operating with a single smartphone, unreliable mobile data, and a guest arriving today.
+
+
 ## Technology
 
 - Next.js 15, React 19, TypeScript
@@ -154,23 +175,3 @@ pnpm start
 ## Optional online AI
 
 The core app works without an API key. To enable the optional online AI tier locally, add `GROQ_API_KEY` to `.env`
-
-## Core Feature Walkthrough
-
-1. **Bilingual Interface:** The application features a seamless toggle between English and नेपाली interfaces to accommodate local hosts.
-2. **Ledger & Finances:** The system simplifies booking entries while automatically tracking and displaying expected versus received payment totals.
-3. **Local Persistence:** Data is cached locally in the browser, ensuring all records and configurations remain fully intact across page reloads.
-4. **Offline Translation (Basic Tier):** Pre-saved Nepali phrases can be translated into English, Hindi, or Bengali entirely offline using guaranteed phrase packs.
-5. **Room Management:** The interface allows for quick room additions, real-time availability updates, and automated price suggestions.
-6. **True Offline-First Architecture:** Once initially loaded, the app operates entirely without an internet connection. Ledger data, room status, checklists, and translation phrase packs remain completely functional even in airplane mode.
-
-## Honest Limitations & Next Steps
-
-- **Translation Constraints:** Arbitrary free-form translation currently requires an online AI or browser translator. The saved phrase packs serve as the guaranteed offline communication path.
-- **Storage Requirements:** The Lite Offline AI feature requires a one-time download and utilizes approximately 180 MB of browser storage.
-- **Messaging Workflow:** Guest communications utilize native device sharing (integrating directly with WhatsApp or SMS) rather than forcing guests or hosts to use a separate messaging app.
-- **Roadmap:** Upcoming features include encrypted data backup and restore capabilities, shareable digital booking confirmations, and an expanded library of curated phrase packs.
-
-## Built for a Real Constraint
-
-Sajilo Stay is not a generic travel dashboard. It is a lightweight, highly resilient tool designed specifically for a local host who may be operating with a single smartphone, unreliable mobile data, and a guest arriving today.
