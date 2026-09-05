@@ -166,6 +166,12 @@ export async function translate(text: string, sourceLanguage: LanguageCode, targ
     return { text, tier: "offline-basic" };
   }
 
+  // Saved phrases are deliberately resolved first. They are the dependable
+  // offline path and must never be replaced by an online response that merely
+  // echoes the original Nepali text.
+  const savedPhrase = translateFromPhrasebook(text, targetLanguage);
+  if (!savedPhrase.note) return savedPhrase;
+
   const { requestOnlineAi } = await import("@/lib/online-ai");
   const onlineTranslation = await requestOnlineAi({ action: "translate", text, sourceLang: sourceLanguage, targetLang: targetLanguage });
   if (onlineTranslation) return { text: onlineTranslation, tier: "online-ai" };
@@ -177,7 +183,7 @@ export async function translate(text: string, sourceLanguage: LanguageCode, targ
     // The API can be present but unavailable for this language pair or device.
   }
 
-  return translateFromPhrasebook(text, targetLanguage);
+  return savedPhrase;
 }
 
 export const quickPhrases = Object.keys(phrasebook);
