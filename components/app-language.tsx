@@ -61,11 +61,11 @@ export function useAppLanguage() { const value = useContext(LanguageContext); if
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useAppLanguage();
-  return <div className="fixed right-4 top-14 z-50 rounded-full border border-[#c7dce3] bg-white/95 p-1 shadow-[0_8px_22px_rgba(15,73,98,0.14)] backdrop-blur">
+  return <div className="fixed right-4 top-14 z-50 rounded-full border-2 border-[#15506d] bg-white p-1 shadow-[0_10px_24px_rgba(15,73,98,0.2)]">
     <div className="flex items-center gap-1" aria-label="App language">
-      <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eaf5f8] text-sm text-[#15506d]">अ</span>
-      <button type="button" aria-pressed={language === "en"} onClick={() => setLanguage("en")} className={`min-h-8 rounded-full px-3 text-xs font-extrabold transition-colors ${language === "en" ? "bg-[#15506d] text-white shadow-sm" : "text-[#5e7085] hover:bg-[#eef8fb] hover:text-[#15506d]"}`}>English</button>
-      <button type="button" aria-pressed={language === "ne"} onClick={() => setLanguage("ne")} className={`min-h-8 rounded-full px-3 text-xs font-extrabold transition-colors ${language === "ne" ? "bg-[#15506d] text-white shadow-sm" : "text-[#5e7085] hover:bg-[#eef8fb] hover:text-[#15506d]"}`}>नेपाली</button>
+      <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d8edf4] text-base font-extrabold text-[#103e55]">अ</span>
+      <button type="button" aria-pressed={language === "en"} onClick={() => setLanguage("en")} className={`min-h-9 rounded-full px-3.5 text-sm font-black transition-colors ${language === "en" ? "bg-[#103e55] text-white shadow-sm" : "bg-white text-[#103e55] hover:bg-[#d8edf4]"}`}>English</button>
+      <button type="button" aria-pressed={language === "ne"} onClick={() => setLanguage("ne")} className={`min-h-9 rounded-full px-3.5 text-sm font-black transition-colors ${language === "ne" ? "bg-[#103e55] text-white shadow-sm" : "bg-white text-[#103e55] hover:bg-[#d8edf4]"}`}>नेपाली</button>
     </div>
   </div>;
 }
