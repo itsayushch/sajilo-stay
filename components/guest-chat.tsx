@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { Message, deleteMessage, getMessages, saveMessage } from "@/lib/db";
-import { LanguageCode, TranslationResult, languages, quickPhrases, translate } from "@/lib/translate";
+import { LanguageCode, TranslationResult, languages, offlinePhrasePacks, translate } from "@/lib/translate";
 import { ConnectionStatus } from "@/components/connection-status";
 
 function createId() {
@@ -21,6 +21,9 @@ export function GuestChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [status, setStatus] = useState("Loading saved conversations…");
   const [isTranslating, setIsTranslating] = useState(false);
+  const [activePack, setActivePack] = useState<(typeof offlinePhrasePacks)[number]["id"]>("booking");
+  const [quickPrice, setQuickPrice] = useState("");
+  const [quickDate, setQuickDate] = useState("");
 
   useEffect(() => {
     getMessages()
@@ -40,6 +43,10 @@ export function GuestChat() {
     setText(phrase);
     setSourceLanguage("en");
     if (targetLanguage === "en") setTargetLanguage("ne");
+  }
+
+  function useTemplate(value: string) {
+    useQuickPhrase(value);
   }
 
   async function submitTranslation(event: FormEvent<HTMLFormElement>) {
@@ -99,7 +106,7 @@ export function GuestChat() {
         <div className="mt-4 flex items-center justify-between gap-3"><p className="text-xs leading-5 text-[#5e7085]">Your translation is saved on this phone.</p><button type="submit" disabled={isTranslating} className="min-h-10 shrink-0 rounded-lg bg-[#15506d] px-4 text-sm font-extrabold text-white disabled:opacity-60">{isTranslating ? "Translating…" : "Translate →"}</button></div>
       </form>
 
-      <section className="mt-5 rounded-2xl border border-[#d6e4dd] bg-[#f4faf7] p-4"><div className="flex items-baseline justify-between gap-3"><h2 className="text-base font-extrabold">English quick phrases</h2><span className="text-xs font-bold text-[#4e7568]">Works offline</span></div><p className="mt-1 text-xs leading-5 text-[#5e7085]">Tap one to set its language and place it in the message box.</p><div className="mt-3 flex flex-wrap gap-2">{quickPhrases.slice(0, 5).map((phrase) => <button key={phrase} type="button" onClick={() => useQuickPhrase(phrase)} className="min-h-9 rounded-full !border-[#b8d5c8] !bg-white px-3 py-1.5 text-left text-xs font-bold !text-[#17634d] !shadow-none hover:!border-[#76a993] hover:!bg-[#fafffc]">{phrase}</button>)}</div></section>
+      <section className="mt-5 rounded-2xl border border-[#d6e4dd] bg-[#f4faf7] p-4"><div className="flex items-baseline justify-between gap-3"><h2 className="text-base font-extrabold">Offline guest phrases</h2><span className="text-xs font-bold text-[#4e7568]">Works offline</span></div><p className="mt-1 text-xs leading-5 text-[#5e7085]">Choose a practical phrase, then translate it or edit it first.</p><div className="mt-3 flex flex-wrap gap-2">{offlinePhrasePacks.map((pack) => <button key={pack.id} type="button" onClick={() => setActivePack(pack.id)} className={`min-h-8 rounded-full px-3 py-1 text-xs font-extrabold !shadow-none ${activePack === pack.id ? "!border-[#17634d] !bg-[#17634d] !text-white" : "!border-[#b8d5c8] !bg-white !text-[#17634d] hover:!bg-[#fafffc]"}`}>{pack.label}</button>)}</div><div className="mt-3 flex flex-wrap gap-2">{offlinePhrasePacks.find((pack) => pack.id === activePack)?.phrases.map((phrase) => <button key={phrase} type="button" onClick={() => useQuickPhrase(phrase)} className="min-h-9 rounded-full !border-[#b8d5c8] !bg-white px-3 py-1.5 text-left text-xs font-bold !text-[#17634d] !shadow-none hover:!border-[#76a993] hover:!bg-[#fafffc]">{phrase}</button>)}</div><div className="mt-4 grid gap-2 border-t border-[#d4e5dc] pt-3"><p className="text-xs font-extrabold text-[#17634d]">Reusable details</p><div className="grid grid-cols-[1fr_auto] gap-2"><input value={quickPrice} onChange={(event) => setQuickPrice(event.target.value)} inputMode="numeric" placeholder="Nightly price, e.g. 2500" className="min-h-9 rounded-lg border-[#b8d5c8] bg-white px-2 text-xs" /><button type="button" disabled={!quickPrice.trim()} onClick={() => useTemplate(`The price is ₹${quickPrice.trim()} per night.`)} className="min-h-9 rounded-lg !border-[#b8d5c8] !bg-white px-2 text-xs font-extrabold !text-[#17634d] !shadow-none">Use price</button></div><div className="grid grid-cols-[1fr_auto] gap-2"><input value={quickDate} onChange={(event) => setQuickDate(event.target.value)} placeholder="Arrival date, e.g. 12 October" className="min-h-9 rounded-lg border-[#b8d5c8] bg-white px-2 text-xs" /><button type="button" disabled={!quickDate.trim()} onClick={() => useTemplate(`Please arrive on ${quickDate.trim()}.`)} className="min-h-9 rounded-lg !border-[#b8d5c8] !bg-white px-2 text-xs font-extrabold !text-[#17634d] !shadow-none">Use date</button></div></div></section>
 
       {status && <p className="status-line mt-4 rounded-lg border border-[#cfe1da] bg-white/70 px-3 py-2 text-xs font-bold" role="status">{status}</p>}
       <section className="mt-6 pb-6"><div className="flex items-baseline justify-between"><h2 className="text-xl font-extrabold">Saved translations</h2>{messages.length ? <span className="text-xs font-bold text-[#5e7085]">{messages.length}</span> : null}</div>{messages.length ? <ul className="mt-3 grid gap-3">{messages.map((message) => <li key={message.id} className="register-panel p-4"><div className="flex items-start justify-between gap-3"><div className="min-w-0 flex-1"><p className="text-xs font-extrabold uppercase tracking-[0.08em] text-[#5e7085]">{languages[message.originalLang as LanguageCode]} → {languages[message.translatedLang as LanguageCode]}</p><p className="mt-2 text-sm leading-6 text-[#35465b]">{message.originalText}</p><p className="mt-3 border-t border-[#dce8e8] pt-3 text-base font-extrabold leading-6 text-[#15506d]">{message.translatedText}</p></div><button type="button" onClick={() => removeMessage(message)} className="min-h-9 rounded-md !border-red-200 !bg-red-50 px-2 text-xs font-bold !text-red-700 !shadow-none hover:!bg-red-100">Remove</button></div></li>)}</ul> : <div className="mt-3 rounded-xl border border-dashed border-[#c8dce0] bg-white/50 px-4 py-5 text-center"><p className="text-sm font-bold text-[#35465b]">No saved translations yet.</p><p className="mt-1 text-xs leading-5 text-[#5e7085]">Your translated messages will appear here for easy reuse.</p></div>}</section>

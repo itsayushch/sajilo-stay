@@ -41,7 +41,29 @@ const phrasebook: Record<string, Partial<Record<LanguageCode, string>>> = {
   "please arrive before 8 pm.": { ne: "कृपया बेलुका ८ बजेअघि आइपुग्नुहोस्।", hi: "कृपया रात 8 बजे से पहले पहुँचें।", bn: "অনুগ্রহ করে রাত ৮টার আগে আসুন।" },
   "breakfast and dinner are available.": { ne: "बिहानको खाजा र बेलुकाको खाना उपलब्ध छ।", hi: "नाश्ता और रात का खाना उपलब्ध है।", bn: "সকালের নাশতা ও রাতের খাবার পাওয়া যায়।" },
   "please remove shoes inside.": { ne: "कृपया भित्र जुत्ता खोल्नुहोस्।", hi: "कृपया अंदर जूते उतारें।", bn: "অনুগ্রহ করে ভেতরে জুতা খুলুন।" },
+  "would you like to book this room?": { ne: "के तपाईं यो कोठा बुक गर्न चाहनुहुन्छ?", hi: "क्या आप यह कमरा बुक करना चाहेंगे?", bn: "আপনি কি এই ঘরটি বুক করতে চান?" },
+  "please send your check-in and check-out dates.": { ne: "कृपया आफ्नो चेक-इन र चेक-आउट मिति पठाउनुहोस्।", hi: "कृपया अपनी चेक-इन और चेक-आउट तारीख भेजें।", bn: "অনুগ্রহ করে আপনার চেক-ইন ও চেক-আউটের তারিখ পাঠান।" },
+  "a deposit is needed to confirm the booking.": { ne: "बुकिङ पुष्टि गर्न अग्रिम रकम आवश्यक छ।", hi: "बुकिंग पक्की करने के लिए अग्रिम राशि आवश्यक है।", bn: "বুকিং নিশ্চিত করতে অগ্রিম টাকা লাগবে।" },
+  "payment can be made by cash or upi.": { ne: "भुक्तानी नगद वा यूपीआईबाट गर्न सकिन्छ।", hi: "भुगतान नकद या यूपीआई से किया जा सकता है।", bn: "নগদ বা ইউপিআই দিয়ে পেমেন্ট করা যায়।" },
+  "your booking is confirmed.": { ne: "तपाईंको बुकिङ पुष्टि भयो।", hi: "आपकी बुकिंग पक्की हो गई है।", bn: "আপনার বুকিং নিশ্চিত হয়েছে।" },
+  "please call us when you reach the village.": { ne: "गाउँ पुग्नुभयो भने कृपया हामीलाई फोन गर्नुहोस्।", hi: "गाँव पहुँचने पर कृपया हमें फोन करें।", bn: "গ্রামে পৌঁছালে অনুগ্রহ করে আমাদের ফোন করুন।" },
+  "we can help arrange a taxi.": { ne: "हामी ट्याक्सी मिलाउन मद्दत गर्न सक्छौं।", hi: "हम टैक्सी की व्यवस्था में मदद कर सकते हैं।", bn: "আমরা ট্যাক্সির ব্যবস্থা করতে সাহায্য করতে পারি।" },
+  "the nearest market is nearby.": { ne: "नजिकै बजार छ।", hi: "पास में बाजार है।", bn: "কাছেই বাজার আছে।" },
+  "there is mobile network here.": { ne: "यहाँ मोबाइल नेटवर्क छ।", hi: "यहाँ मोबाइल नेटवर्क है।", bn: "এখানে মোবাইল নেটওয়ার্ক আছে।" },
+  "please tell us if you have any food allergies.": { ne: "कुनै खानेकुराको एलर्जी छ भने कृपया हामीलाई भन्नुहोस्।", hi: "अगर आपको खाने से कोई एलर्जी है तो कृपया हमें बताएं।", bn: "খাবারে কোনো অ্যালার্জি থাকলে অনুগ্রহ করে আমাদের জানান।" },
+  "hot water is available in the morning and evening.": { ne: "बिहान र बेलुका तातो पानी उपलब्ध छ।", hi: "सुबह और शाम गर्म पानी उपलब्ध है।", bn: "সকাল ও সন্ধ্যায় গরম পানি পাওয়া যায়।" },
+  "wifi is available in common areas.": { ne: "साझा ठाउँमा वाइफाइ उपलब्ध छ।", hi: "साझा जगहों में वाई-फाई उपलब्ध है।", bn: "সাধারণ এলাকায় ওয়াই-ফাই পাওয়া যায়।" },
+  "please keep noise low after 9 pm.": { ne: "कृपया राति ९ बजेपछि आवाज कम राख्नुहोस्।", hi: "कृपया रात 9 बजे के बाद आवाज कम रखें।", bn: "রাত ৯টার পরে অনুগ্রহ করে আওয়াজ কম রাখুন।" },
+  "smoking is not allowed inside.": { ne: "भित्र धुम्रपान गर्न अनुमति छैन।", hi: "अंदर धूम्रपान की अनुमति नहीं है।", bn: "ভেতরে ধূমপান করা যাবে না।" },
+  "please let us know if you need anything.": { ne: "कुनै कुरा चाहिएको छ भने कृपया हामीलाई भन्नुहोस्।", hi: "अगर आपको कुछ चाहिए तो कृपया हमें बताएं।", bn: "কিছু প্রয়োজন হলে অনুগ্রহ করে আমাদের জানান।" },
 };
+
+export const offlinePhrasePacks = [
+  { id: "booking", label: "Booking & payment", phrases: ["is the room available?", "would you like to book this room?", "please send your check-in and check-out dates.", "a deposit is needed to confirm the booking.", "payment can be made by cash or upi.", "your booking is confirmed."] },
+  { id: "arrival", label: "Arrival & directions", phrases: ["how do i get there?", "please arrive before 8 pm.", "please call us when you reach the village.", "we can help arrange a taxi.", "the nearest market is nearby.", "there is mobile network here."] },
+  { id: "stay", label: "During the stay", phrases: ["do you serve food?", "breakfast and dinner are available.", "hot water is available in the morning and evening.", "wifi is available in common areas.", "please tell us if you have any food allergies.", "please let us know if you need anything."] },
+  { id: "rules", label: "House rules", phrases: ["what are the house rules?", "please remove shoes inside.", "please keep noise low after 9 pm.", "smoking is not allowed inside."] },
+] as const;
 
 function normalize(text: string) {
   return text.trim().toLocaleLowerCase();
@@ -49,6 +71,18 @@ function normalize(text: string) {
 
 function translateFromPhrasebook(text: string, targetLanguage: LanguageCode): TranslationResult {
   const key = normalize(text);
+  const priceMatch = text.trim().match(/^the price is\s*₹?\s*([\d,]+)\s*per night\.?$/i);
+  if (priceMatch) {
+    const amount = priceMatch[1];
+    const templates: Partial<Record<LanguageCode, string>> = { ne: `मूल्य प्रति रात रु ${amount} हो।`, hi: `कीमत ₹${amount} प्रति रात है।`, bn: `প্রতি রাতের ভাড়া ₹${amount}।` };
+    if (templates[targetLanguage]) return { text: templates[targetLanguage]!, tier: "offline-basic" };
+  }
+  const dateMatch = text.trim().match(/^please arrive on\s+(.+?)\.?$/i);
+  if (dateMatch) {
+    const date = dateMatch[1];
+    const templates: Partial<Record<LanguageCode, string>> = { ne: `कृपया ${date} मा आइपुग्नुहोस्।`, hi: `कृपया ${date} को पहुँचें।`, bn: `অনুগ্রহ করে ${date}-এ পৌঁছান।` };
+    if (templates[targetLanguage]) return { text: templates[targetLanguage]!, tier: "offline-basic" };
+  }
   const direct = phrasebook[key]?.[targetLanguage];
   if (direct) return { text: direct, tier: "offline-basic" };
 
