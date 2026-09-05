@@ -6,6 +6,19 @@ Sajilo Stay helps a host run the everyday work of a homestay from one low-end An
 
 It is built for unreliable connectivity. Core host data lives on the device, the app is installable as a PWA, and useful fallbacks remain available without mobile data.
 
+## Why the name “Sajilo Stay”?
+
+**Sajilo (सजिलो)** is a familiar Nepali word meaning *easy*, *simple*, or *made manageable*. The name reflects the product promise: hosting should not require complex software, fluent English, or a reliable internet connection.
+
+The app is intentionally usable by hosts who do not read English:
+
+- The host interface can be switched between **English** and **नेपाली** at any time.
+- The language choice is stored on the phone and works without data.
+- Common offline guest-reply phrases are written first in Nepali and include a romanized reading guide.
+- The Guest Message Helper separates what the host writes in Nepali from what a guest sends in another language, translating incoming messages into Nepali for the host’s reference.
+
+In short: English-speaking visitors can receive a clear message, while the host can continue working in a familiar local language.
+
 ## The problem
 
 Tea-garden families can use homestays as a valuable second income, but first-time hosts often have one shared phone, inconsistent data, no property-management software, and guests who communicate in English, Hindi, Bengali, or Nepali.
