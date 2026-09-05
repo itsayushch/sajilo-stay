@@ -32,4 +32,13 @@ export function AppLanguageProvider({ children }: { children: React.ReactNode })
 
 export function useAppLanguage() { const value = useContext(LanguageContext); if (!value) throw new Error("useAppLanguage must be used inside AppLanguageProvider"); return value; }
 
-export function LanguageSwitcher() { const { language, setLanguage } = useAppLanguage(); return <div className="fixed right-4 top-14 z-50 flex overflow-hidden rounded-lg border border-[#b7d7e2] bg-white shadow-sm"><button type="button" onClick={() => setLanguage("en")} className={`px-2.5 py-1.5 text-xs font-extrabold ${language === "en" ? "bg-[#15506d] text-white" : "text-[#15506d]"}`}>EN</button><button type="button" onClick={() => setLanguage("ne")} className={`px-2.5 py-1.5 text-xs font-extrabold ${language === "ne" ? "bg-[#15506d] text-white" : "text-[#15506d]"}`}>ने</button></div>; }
+export function LanguageSwitcher() {
+  const { language, setLanguage } = useAppLanguage();
+  return <div className="fixed right-4 top-14 z-50 rounded-full border border-[#c7dce3] bg-white/95 p-1 shadow-[0_8px_22px_rgba(15,73,98,0.14)] backdrop-blur">
+    <div className="flex items-center gap-1" aria-label="App language">
+      <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-[#eaf5f8] text-sm text-[#15506d]">अ</span>
+      <button type="button" aria-pressed={language === "en"} onClick={() => setLanguage("en")} className={`min-h-8 rounded-full px-3 text-xs font-extrabold transition-colors ${language === "en" ? "bg-[#15506d] text-white shadow-sm" : "text-[#5e7085] hover:bg-[#eef8fb] hover:text-[#15506d]"}`}>English</button>
+      <button type="button" aria-pressed={language === "ne"} onClick={() => setLanguage("ne")} className={`min-h-8 rounded-full px-3 text-xs font-extrabold transition-colors ${language === "ne" ? "bg-[#15506d] text-white shadow-sm" : "text-[#5e7085] hover:bg-[#eef8fb] hover:text-[#15506d]"}`}>नेपाली</button>
+    </div>
+  </div>;
+}
